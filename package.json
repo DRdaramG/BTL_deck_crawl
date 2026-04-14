@@ -1,0 +1,24 @@
+{
+  "name": "btl_deck_crawl",
+  "version": "1.0.0",
+  "description": "designed to play while waiting",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DRdaramG/BTL_deck_crawl.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/DRdaramG/BTL_deck_crawl/issues"
+  },
+  "homepage": "https://github.com/DRdaramG/BTL_deck_crawl#readme",
+  "devDependencies": {
+    "typescript": "^6.0.2"
+  }
+}
