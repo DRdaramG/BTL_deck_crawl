@@ -1,6 +1,6 @@
 # BTL Deck Crawl — 데이터베이스 설계 문서 (db_info.md)
 
-> **최종 수정일**: 2026-04-14  
+> **최종 수정일**: 2026-04-15  
 > **관련 파일**: `src/data/` 디렉토리
 
 ---
@@ -59,7 +59,8 @@ btl_leaderboard   → 로컬 최고 기록 (추후 서버 연동 시 대체)
 ### 3-1. 카드 (CardDefinition)
 
 **파일**: `src/data/cards.ts`  
-**키**: `CARDS` (Record<string, CardDefinition>)
+**키**: `CARDS` (Record<string, CardDefinition>)  
+**총 등록 수**: 191종
 
 | 필드 | 타입 | 설명 |
 |------|------|------|
@@ -74,16 +75,48 @@ btl_leaderboard   → 로컬 최고 기록 (추후 서버 연동 시 대체)
 
 | 필드 | 타입 | 설명 |
 |------|------|------|
-| `type` | `string` | 효과 종류 (`damage`, `block`, `heal`, `evade`, `apply_status` 등) |
+| `type` | `CardEffectType` | 효과 종류 (아래 표 참조) |
 | `value` | `number?` | 수치 값 |
 | `hitCount` | `number?` | 멀티히트 횟수 |
 | `statusEffect` | `StatusEffectId?` | 부여할 상태이상 |
 | `statusStacks` | `number?` | 상태이상 스택 수 |
 | `duration` | `number?` | 지속 턴 수 |
 
-#### 현재 등록 카드 목록
+#### CardEffect 효과 종류
 
-| ID | 이름 | 타입 | AP | 효과 |
+| 타입 | 설명 |
+|------|------|
+| `damage` | 단일 대상 피해 |
+| `damage_all` | 전체 대상 피해 |
+| `multi_hit` | 다중 타격 (value × hitCount) |
+| `block` | 블록(방어) 수치 획득 |
+| `heal` | HP 회복 |
+| `passive_heal` | 패시브 턴 시작 HP 회복 |
+| `evade` | 공격 회피 (duration 턴 동안) |
+| `apply_status` | 상태이상 부여 |
+| `reduce_ap` | 다음 카드 AP 비용 감소 |
+| `restore_ap` | AP 복원 |
+| `damage_reduction` | 피해 감소 |
+| `damage_reflect` | 피해 반사 |
+| `draw_card` | 카드 드로우 |
+| `exhaust_card` | 카드 소진 |
+| `salvage` | 스크랩 획득 |
+| `self_damage` | 자해 피해 (페널티) |
+| `boost_damage` | 피해량 증가 (패시브) |
+| `boost_multi_hit` | 다중 타격 횟수 증가 (패시브) |
+
+#### 카드 타입별 분포
+
+| 타입 | 수량 | 대표 예시 |
+|------|------|-----------|
+| `attack` | 88종 | 레이저 사격, 플라즈마 버스트, 레일건 관통, 미사일 발사 |
+| `skill` | 64종 | 긴급 회피, 사기 진작, 응급 처치, ECM 교란, 커패시터 |
+| `defense` | 36종 | 에너지 실드, 강화 선체, 반사 실드, 요새 배리어 |
+| `passive` | 3종 | 생명 유지, 정밀 생명 유지, 고급 생명 유지 |
+
+#### 기본 카드 목록 (대표 13종)
+
+| ID | 이름 | 타입 | EP | 효과 |
 |----|------|------|----|------|
 | `laser_shot` | 레이저 사격 | attack | 1 | 단일 6 피해 |
 | `plasma_burst` | 플라즈마 버스트 | attack | 2 | 단일 9 피해 + 화상 1 |
@@ -99,12 +132,15 @@ btl_leaderboard   → 로컬 최고 기록 (추후 서버 연동 시 대체)
 | `first_aid` | 응급 처치 | skill | 1 | HP 6 회복 |
 | `life_support_passive` | 생명 유지 | passive | 0 | 매 턴 HP +2 |
 
+> **참고**: 나머지 178종의 카드는 장비 등급(common/rare/epic/legendary) 및 크기(소형/중형/대형) 변형이며, 기본 카드의 수치를 스케일링한 형태이다.
+
 ---
 
 ### 3-2. 장비 (EquipmentDefinition)
 
 **파일**: `src/data/equipment.ts`  
-**키**: `EQUIPMENT` (Record<string, EquipmentDefinition>)
+**키**: `EQUIPMENT` (Record<string, EquipmentDefinition>)  
+**총 등록 수**: 233종
 
 | 필드 | 타입 | 설명 |
 |------|------|------|
@@ -117,28 +153,52 @@ btl_leaderboard   → 로컬 최고 기록 (추후 서버 연동 시 대체)
 | `providedCards` | `EquipmentCard[]` | 제공하는 카드 목록 (카드 ID + 장수) |
 | `description` | `string` | 장비 설명 |
 
-#### 장비 카테고리 (EquipmentCategory)
+#### 장비 카테고리 (EquipmentCategory) — 13종
 
-| 값 | 아이콘 | 설명 |
-|----|--------|------|
-| `weapon` | 🔫 | 공격 카드 생성 |
-| `missile` | 🚀 | 광역/상태이상 공격 |
-| `shield` | 🛡️ | 방어/블록 카드 |
-| `engine` | ⚙️ | 이동/회피 카드 |
-| `crew_quarter` | 🧑‍🚀 | 버프/회복 카드 |
-| `med_bay` | 🏥 | 치유/상태이상 제거 |
-| `life_support` | 💚 | 지속 HP 회복 패시브 |
+| 값 | 아이콘 | 설명 | 수량 |
+|----|--------|------|------|
+| `weapon` | 🔫 | 공격 카드 생성 (레이저, 레일건, 이온, 플라즈마, 펄스) | 64 |
+| `modification` | 🔧 | 장비 개조 (속사, 파워, 정밀, 소이, 과부하, 이온, AOE, EW, 실드, 장갑파괴) | 40 |
+| `electronic_warfare` | 📡 | 전자전 장비 (ECM, 센서 교란, 해킹, 전술 스캐너) | 24 |
+| `shield` | 🛡️ | 방어/블록 카드 (실드 발생기, 강화 선체, 반사 실드, 배리어) | 21 |
+| `drone_bay` | 🤖 | 드론 격납고 (수리/회수/빔/미사일/자폭 드론) | 20 |
+| `missile` | 🚀 | 미사일 장비 (소형/중형/대형) | 13 |
+| `hangar` | ✈️ | 함재기 격납고 (전투기/폭격기/EVA) | 12 |
+| `armor` | 🛡️ | 장갑 장비 (소형/중형/대형) | 12 |
+| `generator` | ⚡ | 동력원/제너레이터 (소형/중형/대형) | 12 |
+| `engine` | ⚙️ | 이동/회피 카드 (부스터, 워프) | 5 |
+| `life_support` | 💚 | 지속 HP 회복 패시브 | 4 |
+| `crew_quarter` | 🧑‍🚀 | 버프/회복 카드 (거주 구역) | 3 |
+| `med_bay` | 🏥 | 치유/상태이상 제거 | 3 |
 
-#### 장비 등급 (EquipmentGrade)
+#### 장비 등급별 분포
 
-| 값 | 색상 | 크기 범위 |
-|----|------|-----------|
-| `common` | 회색 | 1–2칸 |
-| `rare` | 파랑 | 2–4칸 |
-| `epic` | 보라 | 3–5칸 |
-| `legendary` | 황금 | 3–5칸 |
+| 등급 | 색상 | 수량 |
+|------|------|------|
+| `common` | 회색 | 58 |
+| `rare` | 파랑 | 60 |
+| `epic` | 보라 | 61 |
+| `legendary` | 황금 | 54 |
 
-#### 현재 등록 장비 목록
+#### 카테고리 × 등급 분포표
+
+| 카테고리 | Common | Rare | Epic | Legendary | 합계 |
+|----------|--------|------|------|-----------|------|
+| weapon | 16 | 17 | 16 | 15 | 64 |
+| modification | 10 | 10 | 10 | 10 | 40 |
+| electronic_warfare | 6 | 6 | 6 | 6 | 24 |
+| shield | 4 | 5 | 7 | 5 | 21 |
+| drone_bay | 5 | 5 | 5 | 5 | 20 |
+| missile | 4 | 3 | 3 | 3 | 13 |
+| hangar | 3 | 3 | 3 | 3 | 12 |
+| armor | 3 | 3 | 3 | 3 | 12 |
+| generator | 3 | 3 | 3 | 3 | 12 |
+| engine | 1 | 2 | 2 | 0 | 5 |
+| life_support | 1 | 1 | 1 | 1 | 4 |
+| crew_quarter | 1 | 1 | 1 | 0 | 3 |
+| med_bay | 1 | 1 | 1 | 0 | 3 |
+
+#### 기본 장비 목록 (대표 13종)
 
 | ID | 이름 | 카테고리 | 등급 | 모양 | 제공 카드 |
 |----|------|----------|------|------|-----------|
@@ -156,12 +216,15 @@ btl_leaderboard   → 로컬 최고 기록 (추후 서버 연동 시 대체)
 | `med_bay` | 의무실 | med_bay | rare | T자 4칸 | 응급 처치 ×2 |
 | `life_support` | 생명유지장치 | life_support | rare | 2×2 정사각 | 생명 유지 ×1 |
 
+> **참고**: 나머지 220종의 장비는 크기(소형/중형/대형) × 등급(common/rare/epic/legendary) 변형이며, 기본 장비의 수치를 스케일링한 형태이다.
+
 ---
 
 ### 3-3. 우주선 (ShipDefinition)
 
 **파일**: `src/data/ships.ts`  
-**키**: `SHIPS` (Record<string, ShipDefinition>)
+**키**: `SHIPS` (Record<string, ShipDefinition>)  
+**총 등록 수**: 10종
 
 | 필드 | 타입 | 설명 |
 |------|------|------|
@@ -183,20 +246,43 @@ btl_leaderboard   → 로컬 최고 기록 (추후 서버 연동 시 대체)
 | `cols` | `number` | 그리드 열 수 |
 | `validCells` | `Position[]` | 유효 셀(EMPTY) 위치 목록 |
 
-#### 현재 등록 우주선
+#### 현재 등록 우주선 (10종)
 
-| ID | 이름 | 그리드 | 유효 셀 | 시작 장비 | 패시브 | 최대 HP |
-|----|------|--------|---------|-----------|--------|---------|
-| `scout` | 🛸 정찰선 | 5×5 다이아몬드 | 18칸 | 레이저 캐논 + 부스터 엔진 | 회피 카드 사용 시 AP +1 복원 | 50 |
-| `cruiser` | 🚀 순양함 | 7×7 사각 | 35칸 | 플라즈마 건 + 실드 제너레이터 + 선원실 A | 없음 | 70 |
-| `battleship` | 🏰 전함 | 9×7 직사각 | 59칸 | 레일건 + 강화 선체 + 생명유지장치 | 블록 카드 효과 +3 | 90 |
+| ID | 아이콘 | 한글명 | 그리드 | 유효 셀 | 최대 HP | 시작 장비 | 패시브 |
+|----|--------|--------|--------|---------|---------|-----------|--------|
+| `corvette` | 🛸 | 초계함 | 10×9 | 50 | 60 | 부스터 엔진 + 레이저 캐논 + 실드 발생기 | 회피 카드 사용 시 AP +1 복원 |
+| `frigate` | ⚓ | 호위함 | 10×9 | 58 | 70 | 플라즈마 건 + 실드 발생기 + 선원실 A | 공격 카드 사용 시 피해 +2 |
+| `destroyer` | 🚀 | 구축함 | 12×7 | 66 | 80 | 레일건 + 미사일 런처 + 부스터 엔진 | 공격 카드 사용 시 피해 +3 |
+| `cruiser` | 🔷 | 순양함 | 11×9 | 75 | 90 | 플라즈마 건 + 실드 발생기 + 선원실 A + 의무실 | 없음 (범용) |
+| `cargo_ship` | 📦 | 화물선 | 10×9 | 72 | 75 | 레이저 캐논 + 강화 선체 + 생명유지 + 선원실 A | 턴 시작 시 HP 3 회복 |
+| `drone_carrier` | 🤖 | 드론항모 | 11×9 | 79 | 85 | 빔 드론 + 수리 드론 + 실드 발생기 | 드론 카드 사용 시 효과 +3 |
+| `assault_ship` | ⚔️ | 상륙강습함 | 10×11 | 84 | 100 | 플라즈마 건 + 미사일 런처 + 실드 발생기 + 선원실 A | 공격 카드 사용 시 피해량 경감 2 획득 |
+| `battlecruiser` | 💥 | 순양전함 | 14×9 | 90 | 120 | 레일건 + 플라즈마 건 + 부스터 엔진 + 실드 발생기 | 적 처치 시 카드 1장 드로우 |
+| `carrier` | 🛫 | 항모 | 13×11 | 97 | 110 | 전투기 행거 + 폭격기 행거 + 실드 발생기 + 생명유지 | 턴 시작 시 AP +1 복원 |
+| `battleship` | 🏰 | 전함 | 13×11 | 103 | 150 | 레일건 + 강화 선체 + 생명유지 + 실드 발생기 | 블록 카드 효과 +5 |
+
+#### 함선 급 분류 (battle_info.md 참조)
+
+| 급 | 행동 순서 | 해당 함선 |
+|----|-----------|-----------|
+| 소형 기체 | 1 (가장 빠름) | 초계함 (corvette) |
+| 중형 기체 | 2 | 호위함 (frigate) |
+| 상업용 기체 | 3 | 화물선 (cargo_ship) |
+| 구축함 | 4 | 구축함 (destroyer) |
+| 순양함 | 5 | 순양함 (cruiser) |
+| 중순양함 | 6 | 드론항모 (drone_carrier) |
+| 경전함 | 7 | 상륙강습함 (assault_ship) |
+| 순양전함 | 8 | 순양전함 (battlecruiser) |
+| 전함 | 9 | 전함 (battleship) |
+| 거대전함 | 10 (가장 느림) | 항모 (carrier) |
 
 ---
 
 ### 3-4. 상태이상 (StatusEffectDefinition)
 
 **파일**: `src/data/statusEffects.ts`  
-**키**: `STATUS_EFFECTS` (Record<string, StatusEffectDefinition>)
+**키**: `STATUS_EFFECTS` (Record<string, StatusEffectDefinition>)  
+**총 등록 수**: 8종
 
 | 필드 | 타입 | 설명 |
 |------|------|------|
@@ -209,14 +295,29 @@ btl_leaderboard   → 로컬 최고 기록 (추후 서버 연동 시 대체)
 | `valuePerStack` | `number` | 스택당 수치 (음수=피해, 양수=회복) |
 | `disablesActions` | `boolean` | 행동 불가 효과 여부 |
 
-#### 현재 등록 상태이상
+#### 현재 등록 상태이상 (8종)
 
-| ID | 이름 | 효과 | 발동 시점 | 행동 불가 |
-|----|------|------|-----------|-----------|
-| `burn` | 화상 | 매 턴 스택 당 1 피해 | 턴 종료 | ❌ |
-| `overload` | 과부하 | 다음 공격 2배 + 1턴 불가 | — | ✅ |
-| `emp` | EMP | 1턴 카드 사용 불가 | 턴 시작 | ✅ |
-| `repair` | 수리중 | 매 턴 스택 당 1 회복 | 턴 시작 | ❌ |
+| ID | 이름 | 효과 | 발동 시점 | 스택당 수치 | 행동 불가 |
+|----|------|------|-----------|-------------|-----------|
+| `burn` | 화상 | 매 턴 스택 당 1 피해 | 턴 종료 | -1 | ❌ |
+| `overload` | 과부하 | 다음 공격 2배 + 1턴 불가 | — | 2 (배율) | ✅ |
+| `emp` | EMP | 1턴 카드 사용 불가 | 턴 시작 | 0 | ✅ |
+| `repair` | 수리중 | 매 턴 스택 당 1 회복 | 턴 시작 | 1 | ❌ |
+| `ion` | 이온화 | 매 턴 스택 당 1 피해, 3스택 시 EMP | 턴 종료 | -1 | ❌ |
+| `scramble` | 스크램블 | 카드 AP 비용 +1 증가 | 턴 시작 | 1 | ❌ |
+| `armor_break` | 장갑 파괴 | 받는 피해 스택 당 1 증가 | — | 1 | ❌ |
+| `sensor_jam` | 센서 교란 | 공격 적중률 50% 감소 | 턴 시작 | 0 | ❌ |
+
+#### 상태이상 분류
+
+| 분류 | 해당 상태이상 |
+|------|---------------|
+| 유해 효과 | burn, overload, emp, ion, scramble, armor_break, sensor_jam |
+| 유익 효과 | repair |
+| 턴 종료 발동 | burn, ion |
+| 턴 시작 발동 | emp, repair, scramble, sensor_jam |
+| 즉발/조건부 | overload, armor_break |
+| 행동 불가 | overload, emp |
 
 ---
 
@@ -353,13 +454,20 @@ EventChoice
 |--------|-----|
 | `CellState` | `"EMPTY"` \| `"OCCUPIED"` \| `"BLOCKED"` |
 | `EquipmentGrade` | `"common"` \| `"rare"` \| `"epic"` \| `"legendary"` |
-| `EquipmentCategory` | `"weapon"` \| `"missile"` \| `"shield"` \| `"engine"` \| `"crew_quarter"` \| `"med_bay"` \| `"life_support"` |
+| `EquipmentCategory` | `"weapon"` \| `"missile"` \| `"armor"` \| `"shield"` \| `"generator"` \| `"engine"` \| `"crew_quarter"` \| `"med_bay"` \| `"life_support"` \| `"drone_bay"` \| `"electronic_warfare"` \| `"hangar"` \| `"modification"` |
 | `CardType` | `"attack"` \| `"defense"` \| `"skill"` \| `"passive"` |
-| `StatusEffectId` | `"burn"` \| `"overload"` \| `"emp"` \| `"repair"` |
+| `StatusEffectId` | `"burn"` \| `"overload"` \| `"emp"` \| `"repair"` \| `"ion"` \| `"scramble"` \| `"armor_break"` \| `"sensor_jam"` |
 | `NodeType` | `"battle"` \| `"elite"` \| `"boss"` \| `"shop"` \| `"event"` \| `"repair"` |
-| `ShipId` | `"scout"` \| `"cruiser"` \| `"battleship"` |
+| `ShipId` | `"corvette"` \| `"frigate"` \| `"destroyer"` \| `"cruiser"` \| `"battlecruiser"` \| `"battleship"` \| `"cargo_ship"` \| `"assault_ship"` \| `"drone_carrier"` \| `"carrier"` |
 | `Rotation` | `0` \| `90` \| `180` \| `270` |
 | `CurrencyType` | `"scrap"` \| `"data_core"` |
+
+### ShipPassive 타입
+
+| 필드 | 가능한 값 |
+|------|-----------|
+| `trigger` | `"on_evade_card"` \| `"on_block_card"` \| `"on_attack_card"` \| `"on_drone_card"` \| `"on_turn_start"` \| `"on_kill"` \| `"none"` |
+| `effectType` | `"restore_ap"` \| `"add_block"` \| `"add_damage"` \| `"heal"` \| `"gain_currency"` \| `"damage_reduction"` \| `"draw_card"` \| `"none"` |
 
 ---
 
@@ -370,10 +478,10 @@ src/
 └── data/
     ├── index.ts           # 데이터 모듈 진입점 (모든 export 집합)
     ├── types.ts           # 전체 타입/인터페이스 정의
-    ├── cards.ts           # 카드 정의 데이터 (13종)
-    ├── equipment.ts       # 장비 정의 데이터 (13종)
-    ├── ships.ts           # 우주선 정의 데이터 (3종)
-    ├── statusEffects.ts   # 상태이상 정의 데이터 (4종)
+    ├── cards.ts           # 카드 정의 데이터 (191종)
+    ├── equipment.ts       # 장비 정의 데이터 (233종)
+    ├── ships.ts           # 우주선 정의 데이터 (10종)
+    ├── statusEffects.ts   # 상태이상 정의 데이터 (8종)
     ├── zones.ts           # 구역 정의 (4개) + 적 정의 (14종)
     └── events.ts          # 이벤트 정의 데이터 (4종)
 ```
@@ -444,6 +552,56 @@ src/
 4. **Card → StatusEffect**: 카드가 상태이상을 부여 (N:N). `CardEffect.statusEffect`로 연결
 5. **Enemy → Zone**: 적이 특정 구역에 등장 (N:N). `zoneIds` 배열로 매핑
 6. **RunState → Ship**: 런 세이브가 선택된 우주선을 참조 (N:1)
+
+---
+
+## 8. 미결 질문 / 추후 보완 필요 사항
+
+> 아래 항목들은 M1 (프로토타입) 구현 전에 확인이 필요한 사항입니다.  
+> 인간 개발자가 내용을 보강하면 이 섹션에서 해당 항목을 삭제합니다.
+
+### Q1. 함선 컴퓨터 장비 카테고리
+
+`battle_info.md` 2-1절에서 "함선 컴퓨터의 성능에 따라 드로우 수가 결정된다"고 명시하고 있으나, 현재 `EquipmentCategory`에 `computer` 카테고리가 없다.
+
+- 드로우 수는 어떤 장비/속성으로 결정되는가?
+- `electronic_warfare` 카테고리의 일부가 컴퓨터 역할을 하는가?
+- 별도의 `computer` 카테고리를 추가해야 하는가?
+
+### Q2. 레이더 탐지 범위 데이터
+
+`battle_info.md` 1-1절에서 전투 시작 거리가 "레이더 탐지 범위"에 의해 결정된다고 명시하고 있으나, 현재 장비 데이터에 `radarRange` 같은 수치 필드가 없다.
+
+- 레이더 범위는 `electronic_warfare` 카테고리 장비의 속성으로 추가되는가?
+- `EquipmentDefinition`에 `radarRange?: number` 필드를 추가해야 하는가?
+- 기본 함선별 레이더 범위가 있는가?
+
+### Q3. EP(Energy Point)와 AP(Action Point) 관계
+
+`battle_info.md`에서는 EP와 AP를 복합적으로 관리한다고 되어 있고, `generator` 카테고리 장비가 EP를 생성한다. 그런데 `CardDefinition`에는 `epCost`만 있고 `apCost`는 별도로 없다.
+
+- EP와 AP는 같은 자원인가, 별도 자원인가?
+- 별도 자원이라면, 카드에 `apCost` 필드를 추가하고 장비에 `epGeneration` 필드를 추가해야 하는가?
+- `generator` 카테고리 장비가 현재 `draw_card`와 `restore_ap` 카드 효과를 제공하는데, 이것이 EP 수급 역할을 대체하는 것인가?
+
+### Q4. 브릿지 / 함장실 데이터
+
+`battle_info.md` 3-3절에서 게임오버 조건으로 "브릿지 + 함장실 + 선원실이 모두 파괴"를 명시하고 있으나, 현재 데이터에는 `crew_quarter` 카테고리만 존재한다.
+
+- 브릿지(Bridge)와 함장실(Captain's Quarters)은 별도 장비 카테고리로 추가되는가?
+- 그리드의 특정 셀에 고정 배치되는 구역인가?
+- 파괴 불가능한 핵심 구역인가, 아니면 장비처럼 피탄 시 파괴 가능한가?
+
+### Q5. 엔진 출력 수치
+
+`battle_info.md` 1-3절에서 동일 급 함선의 턴 순서를 "엔진 총 출력"으로 결정한다고 되어 있으나, 현재 `EquipmentDefinition`에 `enginePower` 같은 수치 필드가 없다.
+
+- 엔진 출력은 장비 데이터에 추가할 필드인가?
+- 엔진 카테고리 장비의 `shape.cells.length` (크기)로 출력을 대체하는가?
+
+### Q6. Planning.md와 현재 데이터의 차이
+
+`Planning.md`에서는 "정찰선(Scout), 순양함(Cruiser), 전함(Battleship)" 3종으로 기획되어 있으나, 현재 데이터는 10종의 함선이 구현되어 있다. Planning.md의 함선 정보는 현재 데이터에 맞게 업데이트해야 하는가?
 
 ---
 
