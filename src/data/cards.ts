@@ -1,4 +1,4 @@
-import type { CardDefinition } from "./types.js";
+import type { CardDefinition } from "./types";
 
 // ============================================================
 // 카드 정의 데이터

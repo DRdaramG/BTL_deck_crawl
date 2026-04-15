@@ -1,5 +1,5 @@
-import type { ShipDefinition } from "./types.js";
-import type { Position } from "./types.js";
+import type { ShipDefinition } from "./types";
+import type { Position } from "./types";
 
 // ============================================================
 // 우주선 정의 데이터

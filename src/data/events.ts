@@ -1,4 +1,4 @@
-import type { EventDefinition } from "./types.js";
+import type { EventDefinition } from "./types";
 
 // ============================================================
 // 이벤트 정의 데이터
