@@ -1,4 +1,4 @@
-import type { ZoneDefinition, EnemyDefinition } from "./types.js";
+import type { ZoneDefinition, EnemyDefinition } from "./types";
 
 // ============================================================
 // 구역 (Zone) 정의 데이터

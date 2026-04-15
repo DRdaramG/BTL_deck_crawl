@@ -1,4 +1,4 @@
-import type { StatusEffectDefinition } from "./types.js";
+import type { StatusEffectDefinition } from "./types";
 
 // ============================================================
 // 상태이상 정의 데이터

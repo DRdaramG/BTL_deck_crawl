@@ -1,4 +1,4 @@
-import type { EquipmentDefinition } from "./types.js";
+import type { EquipmentDefinition } from "./types";
 
 export const EQUIPMENT: Record<string, EquipmentDefinition> = {
   // ──── A. 오리지널 장비 (Original 13) ────

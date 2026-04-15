@@ -2,12 +2,12 @@
 // BTL Deck Crawl — 데이터 모듈 진입점
 // ============================================================
 
-export { CARDS } from "./cards.js";
-export { EQUIPMENT } from "./equipment.js";
-export { SHIPS } from "./ships.js";
-export { STATUS_EFFECTS } from "./statusEffects.js";
-export { ZONES, ENEMIES } from "./zones.js";
-export { EVENTS } from "./events.js";
+export { CARDS } from "./cards";
+export { EQUIPMENT } from "./equipment";
+export { SHIPS } from "./ships";
+export { STATUS_EFFECTS } from "./statusEffects";
+export { ZONES, ENEMIES } from "./zones";
+export { EVENTS } from "./events";
 
 export type {
   // 공통 타입
@@ -47,4 +47,4 @@ export type {
   RunState,
   GridState,
   PlacedEquipment,
-} from "./types.js";
+} from "./types";
