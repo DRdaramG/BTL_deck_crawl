@@ -50,7 +50,17 @@ export type NodeType =
   | "repair";
 
 /** 우주선 종류 ID */
-export type ShipId = "scout" | "cruiser" | "battleship";
+export type ShipId =
+  | "corvette"
+  | "frigate"
+  | "destroyer"
+  | "cruiser"
+  | "battlecruiser"
+  | "battleship"
+  | "cargo_ship"
+  | "assault_ship"
+  | "drone_carrier"
+  | "carrier";
 
 /** 장비 회전 각도 */
 export type Rotation = 0 | 90 | 180 | 270;
@@ -185,9 +195,24 @@ export interface ShipDefinition {
 
 export interface ShipPassive {
   /** 패시브 트리거 조건 */
-  trigger: "on_evade_card" | "on_block_card" | "none";
+  trigger:
+    | "on_evade_card"
+    | "on_block_card"
+    | "on_attack_card"
+    | "on_drone_card"
+    | "on_turn_start"
+    | "on_kill"
+    | "none";
   /** 효과 종류 */
-  effectType: "restore_ap" | "add_block" | "none";
+  effectType:
+    | "restore_ap"
+    | "add_block"
+    | "add_damage"
+    | "heal"
+    | "gain_currency"
+    | "damage_reduction"
+    | "draw_card"
+    | "none";
   /** 수치 */
   value: number;
 }
