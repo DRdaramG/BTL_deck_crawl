@@ -92,7 +92,7 @@ function frigateValidCells(): Position[] {
  */
 function destroyerValidCells(): Position[] {
   return symmetricCells(7, [0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 2, 1]);
-  // tiles: 1+3+5+7×7+5+3 = 66
+  // tiles: 1+3+5+(7×7)+5+3 = 66
 }
 
 /**
@@ -112,7 +112,7 @@ function destroyerValidCells(): Position[] {
  */
 function cruiserValidCells(): Position[] {
   return symmetricCells(9, [1, 2, 3, 4, 4, 4, 4, 4, 3, 2, 1]);
-  // tiles: 3+5+7+9×5+7+5+3 = 75
+  // tiles: 3+5+7+(9×5)+7+5+3 = 75
 }
 
 /**
@@ -135,7 +135,7 @@ function cruiserValidCells(): Position[] {
  */
 function battlecruiserValidCells(): Position[] {
   return symmetricCells(9, [0, 1, 2, 3, 4, 4, 4, 4, 4, 4, 3, 2, 2, 1]);
-  // tiles: 1+3+5+7+9×6+7+5+5+3 = 90
+  // tiles: 1+3+5+7+(9×6)+7+5+5+3 = 90
 }
 
 /**
@@ -157,7 +157,7 @@ function battlecruiserValidCells(): Position[] {
  */
 function battleshipValidCells(): Position[] {
   return symmetricCells(11, [1, 2, 3, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1]);
-  // tiles: 3+5+7+9+11×5+9+7+5+3 = 103
+  // tiles: 3+5+7+9+(11×5)+9+7+5+3 = 103
 }
 
 /**
@@ -176,8 +176,7 @@ function battleshipValidCells(): Position[] {
  */
 function cargoShipValidCells(): Position[] {
   return symmetricCells(9, [2, 3, 4, 4, 4, 4, 4, 4, 3, 1]);
-  // tiles: 5+7+9×6+7+3 = 76
-  // → 실측: 5+7+9+9+9+9+9+9+7+3 = 76
+  // tiles: 5+7+(9×6)+7+3 = 76
 }
 
 /**
@@ -196,7 +195,7 @@ function cargoShipValidCells(): Position[] {
  */
 function assaultShipValidCells(): Position[] {
   return symmetricCells(11, [3, 4, 5, 5, 5, 5, 4, 3, 2, 1]);
-  // tiles: 7+9+11×4+9+7+5+3 = 84
+  // tiles: 7+9+(11×4)+9+7+5+3 = 84
 }
 
 /**
@@ -216,8 +215,7 @@ function assaultShipValidCells(): Position[] {
  */
 function droneCarrierValidCells(): Position[] {
   return symmetricCells(9, [2, 3, 4, 4, 4, 4, 4, 3, 3, 2, 0]);
-  // tiles: 5+7+9×5+7+7+5+1 = 77
-  // → 실측: 5+7+9+9+9+9+9+7+7+5+1 = 77
+  // tiles: 5+7+(9×5)+7+7+5+1 = 77
 }
 
 /**
@@ -239,8 +237,7 @@ function droneCarrierValidCells(): Position[] {
  */
 function carrierValidCells(): Position[] {
   return symmetricCells(11, [1, 3, 4, 5, 5, 5, 5, 5, 4, 4, 3, 2, 1]);
-  // tiles: 3+7+9+11×5+9+9+7+5+3 = 107
-  // → 실측: 3+7+9+11+11+11+11+11+9+9+7+5+3 = 107
+  // tiles: 3+7+9+(11×5)+9+9+7+5+3 = 107
 }
 
 // ────────────────────────────────────────────────────────────
@@ -400,11 +397,11 @@ export const SHIPS: Record<string, ShipDefinition> = {
       "shield_generator",
       "crew_quarter_a",
     ],
-    passiveDescription: "적 처치 시 카드 1장 드로우",
+    passiveDescription: "공격 카드 사용 시 피해량 경감 2 획득",
     passive: {
-      trigger: "on_kill",
-      effectType: "draw_card",
-      value: 1,
+      trigger: "on_attack_card",
+      effectType: "damage_reduction",
+      value: 2,
     },
     maxHp: 100,
   },
