@@ -251,7 +251,6 @@ export const SHIPS: Record<string, ShipDefinition> = {
     id: "corvette",
     name: "Corvette",
     nameKo: "초계함",
-    icon: "🛸",
     grid: {
       rows: 10,
       cols: 9,
@@ -271,7 +270,6 @@ export const SHIPS: Record<string, ShipDefinition> = {
     id: "frigate",
     name: "Frigate",
     nameKo: "호위함",
-    icon: "⚓",
     grid: {
       rows: 10,
       cols: 9,
@@ -293,7 +291,6 @@ export const SHIPS: Record<string, ShipDefinition> = {
     id: "destroyer",
     name: "Destroyer",
     nameKo: "구축함",
-    icon: "🚀",
     grid: {
       rows: 12,
       cols: 7,
@@ -313,7 +310,6 @@ export const SHIPS: Record<string, ShipDefinition> = {
     id: "cruiser",
     name: "Cruiser",
     nameKo: "순양함",
-    icon: "🔷",
     grid: {
       rows: 11,
       cols: 9,
@@ -334,7 +330,6 @@ export const SHIPS: Record<string, ShipDefinition> = {
     id: "cargo_ship",
     name: "Cargo Ship",
     nameKo: "화물선",
-    icon: "📦",
     grid: {
       rows: 10,
       cols: 9,
@@ -361,7 +356,6 @@ export const SHIPS: Record<string, ShipDefinition> = {
     id: "drone_carrier",
     name: "Drone Carrier",
     nameKo: "드론항모",
-    icon: "🤖",
     grid: {
       rows: 11,
       cols: 9,
@@ -385,7 +379,6 @@ export const SHIPS: Record<string, ShipDefinition> = {
     id: "assault_ship",
     name: "Assault Ship",
     nameKo: "상륙강습함",
-    icon: "⚔️",
     grid: {
       rows: 10,
       cols: 11,
@@ -410,7 +403,6 @@ export const SHIPS: Record<string, ShipDefinition> = {
     id: "battlecruiser",
     name: "Battlecruiser",
     nameKo: "순양전함",
-    icon: "💥",
     grid: {
       rows: 14,
       cols: 9,
@@ -435,7 +427,6 @@ export const SHIPS: Record<string, ShipDefinition> = {
     id: "carrier",
     name: "Carrier",
     nameKo: "항모",
-    icon: "🛫",
     grid: {
       rows: 13,
       cols: 11,
@@ -460,7 +451,6 @@ export const SHIPS: Record<string, ShipDefinition> = {
     id: "battleship",
     name: "Battleship",
     nameKo: "전함",
-    icon: "🏰",
     grid: {
       rows: 13,
       cols: 11,

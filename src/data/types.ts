@@ -184,8 +184,6 @@ export interface ShipDefinition {
   name: string;
   /** 한글 이름 */
   nameKo: string;
-  /** 이모지 아이콘 */
-  icon: string;
   /** 그리드 정의 */
   grid: GridDefinition;
   /** 시작 장비 ID 목록 */
