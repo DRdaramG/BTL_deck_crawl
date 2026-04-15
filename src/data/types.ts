@@ -16,7 +16,9 @@ export type EquipmentGrade = "common" | "rare" | "epic" | "legendary";
 export type EquipmentCategory =
   | "weapon"
   | "missile"
+  | "armor"
   | "shield"
+  | "generator"
   | "engine"
   | "crew_quarter"
   | "med_bay"
@@ -131,7 +133,10 @@ export interface CardEffect {
     | "salvage"
     | "self_damage"
     | "boost_damage"
-    | "boost_multi_hit";
+    | "boost_multi_hit"
+    | "draw_card"
+    | "exhaust_card"
+    | "restore_ap";
   /** 수치 값 (피해량, 블록량, 회복량 등) */
   value?: number;
   /** 멀티히트 횟수 */
