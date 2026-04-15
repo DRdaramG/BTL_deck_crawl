@@ -108,8 +108,8 @@ export interface CardDefinition {
   id: string;
   name: string;
   type: CardType;
-  /** 액션 포인트 비용 (패시브의 경우 0) */
-  apCost: number;
+  /** 에너지 포인트 비용 (패시브의 경우 0) */
+  epCost: number;
   /** 카드 효과 설명 */
   description: string;
   /** 효과 상세 (수치 파라미터) */

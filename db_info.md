@@ -66,7 +66,7 @@ btl_leaderboard   → 로컬 최고 기록 (추후 서버 연동 시 대체)
 | `id` | `string` | 카드 고유 ID |
 | `name` | `string` | 카드 이름 (한글) |
 | `type` | `CardType` | `"attack"` / `"defense"` / `"skill"` / `"passive"` |
-| `apCost` | `number` | 액션 포인트 비용 |
+| `epCost` | `number` | 에너지 포인트 비용 |
 | `description` | `string` | 효과 설명 |
 | `effects` | `CardEffect[]` | 효과 상세 목록 |
 
@@ -388,7 +388,7 @@ src/
 │              │   (1:N cards)     │              │
 │  - id        │                   │  - id        │
 │  - category  │                   │  - type      │
-│  - grade     │                   │  - apCost    │
+│  - grade     │                   │  - epCost    │
 │  - shape     │                   │  - effects[] │
 └──────┬───────┘                   └──────┬───────┘
        │                                  │
