@@ -27,7 +27,7 @@
 - [x] 상태이상 데이터 정의 (`src/data/statusEffects.ts`)
 - [x] 구역/적 데이터 정의 (`src/data/zones.ts`)
 - [x] 이벤트 데이터 정의 (`src/data/events.ts`)
-- [ ] ToDo 체크리스트 작성 (`ToDo.md`)
+- [x] ToDo 체크리스트 작성 (`ToDo.md`)
 
 ---
 
