@@ -20,13 +20,25 @@ export type EquipmentCategory =
   | "engine"
   | "crew_quarter"
   | "med_bay"
-  | "life_support";
+  | "life_support"
+  | "drone_bay"
+  | "electronic_warfare"
+  | "hangar"
+  | "modification";
 
 /** 카드 타입 */
 export type CardType = "attack" | "defense" | "skill" | "passive";
 
 /** 상태이상 ID */
-export type StatusEffectId = "burn" | "overload" | "emp" | "repair";
+export type StatusEffectId =
+  | "burn"
+  | "overload"
+  | "emp"
+  | "repair"
+  | "ion"
+  | "scramble"
+  | "armor_break"
+  | "sensor_jam";
 
 /** 스테이지 노드 타입 */
 export type NodeType =
@@ -105,7 +117,11 @@ export interface CardEffect {
     | "damage_reduction"
     | "damage_reflect"
     | "passive_heal"
-    | "multi_hit";
+    | "multi_hit"
+    | "salvage"
+    | "self_damage"
+    | "boost_damage"
+    | "boost_multi_hit";
   /** 수치 값 (피해량, 블록량, 회복량 등) */
   value?: number;
   /** 멀티히트 횟수 */
