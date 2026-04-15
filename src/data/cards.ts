@@ -1501,4 +1501,528 @@ export const CARDS: Record<string, CardDefinition> = {
     description: "블록 10 획득",
     effects: [{ type: "block", value: 10 }],
   },
+
+  // ============================================================
+  // 장갑 카드
+  // ============================================================
+
+  armor_plate_sm: {
+    id: "armor_plate_sm",
+    name: "소형 장갑판",
+    type: "defense",
+    apCost: 1,
+    description: "블록 6 획득",
+    effects: [{ type: "block", value: 6 }],
+  },
+  armor_plate_md: {
+    id: "armor_plate_md",
+    name: "중형 장갑판",
+    type: "defense",
+    apCost: 1,
+    description: "블록 10 획득",
+    effects: [{ type: "block", value: 10 }],
+  },
+  armor_plate_lg: {
+    id: "armor_plate_lg",
+    name: "대형 장갑판",
+    type: "defense",
+    apCost: 2,
+    description: "블록 15 획득",
+    effects: [{ type: "block", value: 15 }],
+  },
+
+  armor_reinforce_sm: {
+    id: "armor_reinforce_sm",
+    name: "소형 보강 장갑",
+    type: "defense",
+    apCost: 2,
+    description: "블록 8 획득 + 피해 감소 1 (1턴)",
+    effects: [
+      { type: "block", value: 8 },
+      { type: "damage_reduction", value: 1, duration: 1 },
+    ],
+  },
+  armor_reinforce_md: {
+    id: "armor_reinforce_md",
+    name: "중형 보강 장갑",
+    type: "defense",
+    apCost: 2,
+    description: "블록 12 획득 + 피해 감소 1 (2턴)",
+    effects: [
+      { type: "block", value: 12 },
+      { type: "damage_reduction", value: 1, duration: 2 },
+    ],
+  },
+  armor_reinforce_lg: {
+    id: "armor_reinforce_lg",
+    name: "대형 보강 장갑",
+    type: "defense",
+    apCost: 3,
+    description: "블록 18 획득 + 피해 감소 2 (2턴)",
+    effects: [
+      { type: "block", value: 18 },
+      { type: "damage_reduction", value: 2, duration: 2 },
+    ],
+  },
+
+  armor_reactive_sm: {
+    id: "armor_reactive_sm",
+    name: "소형 반응 장갑",
+    type: "defense",
+    apCost: 2,
+    description: "블록 6 + 피해 반사",
+    effects: [
+      { type: "block", value: 6 },
+      { type: "damage_reflect" },
+    ],
+  },
+  armor_reactive_md: {
+    id: "armor_reactive_md",
+    name: "중형 반응 장갑",
+    type: "defense",
+    apCost: 2,
+    description: "블록 10 + 피해 반사",
+    effects: [
+      { type: "block", value: 10 },
+      { type: "damage_reflect" },
+    ],
+  },
+  armor_reactive_lg: {
+    id: "armor_reactive_lg",
+    name: "대형 반응 장갑",
+    type: "defense",
+    apCost: 3,
+    description: "블록 15 + 피해 반사",
+    effects: [
+      { type: "block", value: 15 },
+      { type: "damage_reflect" },
+    ],
+  },
+
+  armor_nanite_sm: {
+    id: "armor_nanite_sm",
+    name: "소형 나노 장갑",
+    type: "defense",
+    apCost: 2,
+    description: "블록 8 획득 + HP 5 회복",
+    effects: [
+      { type: "block", value: 8 },
+      { type: "heal", value: 5 },
+    ],
+  },
+  armor_nanite_md: {
+    id: "armor_nanite_md",
+    name: "중형 나노 장갑",
+    type: "defense",
+    apCost: 2,
+    description: "블록 12 획득 + HP 8 회복",
+    effects: [
+      { type: "block", value: 12 },
+      { type: "heal", value: 8 },
+    ],
+  },
+  armor_nanite_lg: {
+    id: "armor_nanite_lg",
+    name: "대형 나노 장갑",
+    type: "defense",
+    apCost: 3,
+    description: "블록 18 획득 + HP 12 회복",
+    effects: [
+      { type: "block", value: 18 },
+      { type: "heal", value: 12 },
+    ],
+  },
+
+  // ============================================================
+  // 배리어 카드
+  // ============================================================
+
+  barrier_sm: {
+    id: "barrier_sm",
+    name: "소형 에너지 배리어",
+    type: "defense",
+    apCost: 1,
+    description: "블록 7 획득",
+    effects: [{ type: "block", value: 7 }],
+  },
+  barrier_md: {
+    id: "barrier_md",
+    name: "중형 에너지 배리어",
+    type: "defense",
+    apCost: 1,
+    description: "블록 11 획득",
+    effects: [{ type: "block", value: 11 }],
+  },
+  barrier_lg: {
+    id: "barrier_lg",
+    name: "대형 에너지 배리어",
+    type: "defense",
+    apCost: 2,
+    description: "블록 16 획득",
+    effects: [{ type: "block", value: 16 }],
+  },
+
+  barrier_overcharge_sm: {
+    id: "barrier_overcharge_sm",
+    name: "소형 과충전 배리어",
+    type: "defense",
+    apCost: 2,
+    description: "블록 10 획득 + 회피 1턴",
+    effects: [
+      { type: "block", value: 10 },
+      { type: "evade", duration: 1 },
+    ],
+  },
+  barrier_overcharge_md: {
+    id: "barrier_overcharge_md",
+    name: "중형 과충전 배리어",
+    type: "defense",
+    apCost: 2,
+    description: "블록 14 획득 + 회피 1턴",
+    effects: [
+      { type: "block", value: 14 },
+      { type: "evade", duration: 1 },
+    ],
+  },
+  barrier_overcharge_lg: {
+    id: "barrier_overcharge_lg",
+    name: "대형 과충전 배리어",
+    type: "defense",
+    apCost: 3,
+    description: "블록 20 획득 + 회피 1턴",
+    effects: [
+      { type: "block", value: 20 },
+      { type: "evade", duration: 1 },
+    ],
+  },
+
+  barrier_fortress_sm: {
+    id: "barrier_fortress_sm",
+    name: "소형 요새 배리어",
+    type: "defense",
+    apCost: 2,
+    description: "블록 12 획득 + 피해 감소 1 (1턴)",
+    effects: [
+      { type: "block", value: 12 },
+      { type: "damage_reduction", value: 1, duration: 1 },
+    ],
+  },
+  barrier_fortress_md: {
+    id: "barrier_fortress_md",
+    name: "중형 요새 배리어",
+    type: "defense",
+    apCost: 2,
+    description: "블록 16 획득 + 피해 감소 2 (1턴)",
+    effects: [
+      { type: "block", value: 16 },
+      { type: "damage_reduction", value: 2, duration: 1 },
+    ],
+  },
+  barrier_fortress_lg: {
+    id: "barrier_fortress_lg",
+    name: "대형 요새 배리어",
+    type: "defense",
+    apCost: 3,
+    description: "블록 22 획득 + 피해 감소 2 (2턴)",
+    effects: [
+      { type: "block", value: 22 },
+      { type: "damage_reduction", value: 2, duration: 2 },
+    ],
+  },
+
+  barrier_absorption_sm: {
+    id: "barrier_absorption_sm",
+    name: "소형 흡수 배리어",
+    type: "defense",
+    apCost: 2,
+    description: "블록 8 획득 + HP 4 회복",
+    effects: [
+      { type: "block", value: 8 },
+      { type: "heal", value: 4 },
+    ],
+  },
+  barrier_absorption_md: {
+    id: "barrier_absorption_md",
+    name: "중형 흡수 배리어",
+    type: "defense",
+    apCost: 2,
+    description: "블록 12 획득 + HP 6 회복",
+    effects: [
+      { type: "block", value: 12 },
+      { type: "heal", value: 6 },
+    ],
+  },
+  barrier_absorption_lg: {
+    id: "barrier_absorption_lg",
+    name: "대형 흡수 배리어",
+    type: "defense",
+    apCost: 3,
+    description: "블록 16 획득 + HP 10 회복",
+    effects: [
+      { type: "block", value: 16 },
+      { type: "heal", value: 10 },
+    ],
+  },
+
+  // ============================================================
+  // 제너레이터 카드
+  // ============================================================
+
+  power_cell_sm: {
+    id: "power_cell_sm",
+    name: "소형 파워 셀",
+    type: "skill",
+    apCost: 0,
+    description: "AP 1 회복",
+    effects: [{ type: "restore_ap", value: 1 }],
+  },
+  power_cell_md: {
+    id: "power_cell_md",
+    name: "중형 파워 셀",
+    type: "skill",
+    apCost: 0,
+    description: "AP 2 회복",
+    effects: [{ type: "restore_ap", value: 2 }],
+  },
+  power_cell_lg: {
+    id: "power_cell_lg",
+    name: "대형 파워 셀",
+    type: "skill",
+    apCost: 0,
+    description: "AP 3 회복",
+    effects: [{ type: "restore_ap", value: 3 }],
+  },
+
+  reactor_boost_sm: {
+    id: "reactor_boost_sm",
+    name: "소형 리액터 부스트",
+    type: "skill",
+    apCost: 0,
+    description: "AP 1 회복 + 블록 5 획득",
+    effects: [
+      { type: "restore_ap", value: 1 },
+      { type: "block", value: 5 },
+    ],
+  },
+  reactor_boost_md: {
+    id: "reactor_boost_md",
+    name: "중형 리액터 부스트",
+    type: "skill",
+    apCost: 0,
+    description: "AP 2 회복 + 블록 5 획득",
+    effects: [
+      { type: "restore_ap", value: 2 },
+      { type: "block", value: 5 },
+    ],
+  },
+  reactor_boost_lg: {
+    id: "reactor_boost_lg",
+    name: "대형 리액터 부스트",
+    type: "skill",
+    apCost: 0,
+    description: "AP 2 회복 + 블록 8 획득",
+    effects: [
+      { type: "restore_ap", value: 2 },
+      { type: "block", value: 8 },
+    ],
+  },
+
+  emergency_power_sm: {
+    id: "emergency_power_sm",
+    name: "소형 비상 전력",
+    type: "skill",
+    apCost: 0,
+    description: "AP 2 회복, 자신에게 3 피해",
+    effects: [
+      { type: "restore_ap", value: 2 },
+      { type: "self_damage", value: 3 },
+    ],
+  },
+  emergency_power_md: {
+    id: "emergency_power_md",
+    name: "중형 비상 전력",
+    type: "skill",
+    apCost: 0,
+    description: "AP 3 회복, 자신에게 4 피해",
+    effects: [
+      { type: "restore_ap", value: 3 },
+      { type: "self_damage", value: 4 },
+    ],
+  },
+  emergency_power_lg: {
+    id: "emergency_power_lg",
+    name: "대형 비상 전력",
+    type: "skill",
+    apCost: 0,
+    description: "AP 4 회복, 자신에게 5 피해",
+    effects: [
+      { type: "restore_ap", value: 4 },
+      { type: "self_damage", value: 5 },
+    ],
+  },
+
+  capacitor_sm: {
+    id: "capacitor_sm",
+    name: "소형 커패시터",
+    type: "skill",
+    apCost: 0,
+    description: "AP 1 회복 + 카드 1장 드로우",
+    effects: [
+      { type: "restore_ap", value: 1 },
+      { type: "draw_card", value: 1 },
+    ],
+  },
+  capacitor_md: {
+    id: "capacitor_md",
+    name: "중형 커패시터",
+    type: "skill",
+    apCost: 0,
+    description: "AP 1 회복 + 카드 2장 드로우",
+    effects: [
+      { type: "restore_ap", value: 1 },
+      { type: "draw_card", value: 2 },
+    ],
+  },
+  capacitor_lg: {
+    id: "capacitor_lg",
+    name: "대형 커패시터",
+    type: "skill",
+    apCost: 0,
+    description: "AP 2 회복 + 카드 2장 드로우",
+    effects: [
+      { type: "restore_ap", value: 2 },
+      { type: "draw_card", value: 2 },
+    ],
+  },
+
+  // ============================================================
+  // 전자전 유틸리티 카드
+  // ============================================================
+
+  tactical_scan_sm: {
+    id: "tactical_scan_sm",
+    name: "소형 전술 스캔",
+    type: "skill",
+    apCost: 1,
+    description: "카드 1장 드로우",
+    effects: [{ type: "draw_card", value: 1 }],
+  },
+  tactical_scan_md: {
+    id: "tactical_scan_md",
+    name: "중형 전술 스캔",
+    type: "skill",
+    apCost: 1,
+    description: "카드 2장 드로우",
+    effects: [{ type: "draw_card", value: 2 }],
+  },
+  tactical_scan_lg: {
+    id: "tactical_scan_lg",
+    name: "대형 전술 스캔",
+    type: "skill",
+    apCost: 2,
+    description: "카드 3장 드로우",
+    effects: [{ type: "draw_card", value: 3 }],
+  },
+
+  signal_intel_sm: {
+    id: "signal_intel_sm",
+    name: "소형 신호 정보",
+    type: "skill",
+    apCost: 1,
+    description: "카드 1장 드로우 + 적에게 센서 교란 1 부여",
+    effects: [
+      { type: "draw_card", value: 1 },
+      { type: "apply_status", statusEffect: "sensor_jam", statusStacks: 1 },
+    ],
+  },
+  signal_intel_md: {
+    id: "signal_intel_md",
+    name: "중형 신호 정보",
+    type: "skill",
+    apCost: 1,
+    description: "카드 2장 드로우 + 적에게 교란 1 부여",
+    effects: [
+      { type: "draw_card", value: 2 },
+      { type: "apply_status", statusEffect: "scramble", statusStacks: 1 },
+    ],
+  },
+  signal_intel_lg: {
+    id: "signal_intel_lg",
+    name: "대형 신호 정보",
+    type: "skill",
+    apCost: 2,
+    description: "카드 2장 드로우 + 적에게 EMP 1 부여",
+    effects: [
+      { type: "draw_card", value: 2 },
+      { type: "apply_status", statusEffect: "emp", statusStacks: 1 },
+    ],
+  },
+
+  countermeasure_sm: {
+    id: "countermeasure_sm",
+    name: "소형 대응책",
+    type: "skill",
+    apCost: 1,
+    description: "카드 1장 제외 + 블록 5 획득",
+    effects: [
+      { type: "exhaust_card", value: 1 },
+      { type: "block", value: 5 },
+    ],
+  },
+  countermeasure_md: {
+    id: "countermeasure_md",
+    name: "중형 대응책",
+    type: "skill",
+    apCost: 1,
+    description: "카드 1장 제외 + 블록 8 획득",
+    effects: [
+      { type: "exhaust_card", value: 1 },
+      { type: "block", value: 8 },
+    ],
+  },
+  countermeasure_lg: {
+    id: "countermeasure_lg",
+    name: "대형 대응책",
+    type: "skill",
+    apCost: 2,
+    description: "카드 2장 제외 + 블록 12 획득",
+    effects: [
+      { type: "exhaust_card", value: 2 },
+      { type: "block", value: 12 },
+    ],
+  },
+
+  cyber_attack_sm: {
+    id: "cyber_attack_sm",
+    name: "소형 사이버 공격",
+    type: "attack",
+    apCost: 1,
+    description: "적에게 5 피해 + 카드 1장 드로우",
+    effects: [
+      { type: "damage", value: 5 },
+      { type: "draw_card", value: 1 },
+    ],
+  },
+  cyber_attack_md: {
+    id: "cyber_attack_md",
+    name: "중형 사이버 공격",
+    type: "attack",
+    apCost: 2,
+    description: "적에게 8 피해 + 카드 1장 드로우",
+    effects: [
+      { type: "damage", value: 8 },
+      { type: "draw_card", value: 1 },
+    ],
+  },
+  cyber_attack_lg: {
+    id: "cyber_attack_lg",
+    name: "대형 사이버 공격",
+    type: "attack",
+    apCost: 2,
+    description: "적에게 12 피해 + 카드 2장 드로우",
+    effects: [
+      { type: "damage", value: 12 },
+      { type: "draw_card", value: 2 },
+    ],
+  },
 };
