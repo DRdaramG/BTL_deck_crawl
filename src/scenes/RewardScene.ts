@@ -18,6 +18,8 @@ const CARD_PX_W = 240;
 interface RewardSceneData {
   shipId: string;
   placedEquipment: PlacedEquipment[];
+  /** Stage map return data (for resuming map after rewards) */
+  returnData?: Record<string, unknown>;
 }
 
 /**
@@ -101,13 +103,20 @@ export class RewardScene extends Phaser.Scene {
 
   private confirmSelection(): void {
     if (this.selectedIndex < 0 || this.selectedIndex >= this.rewardOptions.length) return;
-    // For now, just go back to ShipSelectScene
-    // In full game, this would add the equipment to inventory
-    this.scene.start("ShipSelectScene");
+    this.returnToMap();
   }
 
   private skip(): void {
-    this.scene.start("ShipSelectScene");
+    this.returnToMap();
+  }
+
+  private returnToMap(): void {
+    if (this.sceneData.returnData) {
+      // Return to stage map with preserved state
+      this.scene.start("StageMapScene", this.sceneData.returnData);
+    } else {
+      this.scene.start("ShipSelectScene");
+    }
   }
 
   // ─── Render Helpers ───────────────────────────────────────

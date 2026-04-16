@@ -339,8 +339,9 @@ src/
 │   ├── BootScene.ts     # 부팅 애니메이션 (터미널 스타일)
 │   ├── ShipSelectScene.ts # 함선 선택 (10종 카드형 UI)
 │   ├── ShipSetupScene.ts  # 장비 배치 (그리드 + 드래그&드롭)
-│   ├── BattleScene.ts   # 전투 (구현 중)
-│   └── RewardScene.ts   # 보상 (구현 중)
+│   ├── StageMapScene.ts # 스테이지 맵 (구역별 노드 맵 UI)
+│   ├── BattleScene.ts   # 전투 (구현 완료)
+│   └── RewardScene.ts   # 보상 (구현 완료)
 ├── ui/                  # ASCII ART 렌더링 파이프라인 (lowtech scifi 콘솔)
 │   ├── index.ts         # UI 모듈 진입점 (barrel export)
 │   ├── Theme.ts         # 색상 팔레트, 폰트, 공용 텍스트 스타일 상수
@@ -351,7 +352,8 @@ src/
 ├── systems/
 │   ├── grid/            # 그리드 배치 로직 (GridModel, Polyomino)
 │   ├── deck/            # 덱 관리 (Deck — 셔플, 드로우, 리로드)
-│   └── combat/          # 전투 (CombatState, CardEffectEngine)
+│   ├── combat/          # 전투 (CombatState, CardEffectEngine)
+│   └── stage/           # 스테이지 맵 (StageMapGenerator)
 └── data/
     ├── index.ts         # 데이터 모듈 진입점
     ├── types.ts         # 전체 타입/인터페이스 정의

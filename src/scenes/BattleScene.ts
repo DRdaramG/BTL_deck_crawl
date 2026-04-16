@@ -38,6 +38,8 @@ interface BattleSceneData {
   shipId: string;
   placedEquipment: PlacedEquipment[];
   enemyId: string;
+  /** Stage map return data (for resuming map after battle) */
+  returnData?: Record<string, unknown>;
 }
 
 /**
@@ -50,6 +52,7 @@ export class BattleScene extends Phaser.Scene {
   private combat!: CombatState;
   private shipDef!: ShipDefinition;
   private enemyDef!: EnemyDefinition;
+  private returnData?: Record<string, unknown>;
 
   // UI groups
   private uiObjects: Phaser.GameObjects.GameObject[] = [];
@@ -72,6 +75,8 @@ export class BattleScene extends Phaser.Scene {
     const enemy = ENEMIES.find((e) => e.id === data.enemyId);
     if (!enemy) throw new Error(`Unknown enemy: ${data.enemyId}`);
     this.enemyDef = enemy;
+
+    this.returnData = data.returnData;
 
     // Build deck from placed equipment
     const deck = new Deck();
@@ -507,6 +512,7 @@ export class BattleScene extends Phaser.Scene {
         this.scene.start("RewardScene", {
           shipId: this.shipDef.id,
           placedEquipment: this.combat.placedEquipment,
+          returnData: this.returnData,
         });
       });
     }
