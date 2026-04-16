@@ -1,5 +1,5 @@
 import * as Phaser from "phaser";
-import { SHIPS, EQUIPMENT, CARDS, ENEMIES } from "../data";
+import { SHIPS, EQUIPMENT, CARDS } from "../data";
 import type {
   ShipDefinition,
   EquipmentDefinition,
@@ -643,20 +643,13 @@ export class ShipSetupScene extends Phaser.Scene {
       return;
     }
 
-    // Pick a random non-boss, non-elite enemy from zone 1
-    const zone1Enemies = ENEMIES.filter(
-      (e) => e.zoneIds.includes(1) && !e.isBoss && !e.isElite,
-    );
-    if (zone1Enemies.length === 0) {
-      this.setInfo("No enemies available for zone 1!", Color.RED);
-      return;
-    }
-    const enemy = zone1Enemies[Math.floor(Math.random() * zone1Enemies.length)]!;
-
-    this.scene.start("BattleScene", {
+    // Navigate to Stage Map (M2)
+    this.scene.start("StageMapScene", {
       shipId: this.shipDef.id,
       placedEquipment: placed,
-      enemyId: enemy.id,
+      zoneId: 1,
+      maxHp: this.shipDef.maxHp,
+      currentHp: this.shipDef.maxHp,
     });
   }
 
