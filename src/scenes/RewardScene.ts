@@ -277,7 +277,8 @@ export class RewardScene extends Phaser.Scene {
 
     while (result.length < count && result.length < pool.length) {
       const idx = Math.floor(Math.random() * pool.length);
-      const id = pool[idx]!;
+      const id = pool[idx];
+      if (!id) continue;
       if (used.has(id)) continue;
       used.add(id);
 

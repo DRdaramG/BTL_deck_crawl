@@ -555,7 +555,8 @@ export class BattleScene extends Phaser.Scene {
 
   private cardEffectSummary(cardDef: CardDefinition): string {
     if (cardDef.effects.length === 0) return "No effect";
-    const e = cardDef.effects[0]!;
+    const e = cardDef.effects[0];
+    if (!e) return "No effect";
     switch (e.type) {
       case "damage": return `${e.value ?? 0} DMG`;
       case "damage_all": return `${e.value ?? 0} DMG (all)`;

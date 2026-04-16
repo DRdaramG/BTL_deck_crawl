@@ -315,7 +315,8 @@ export class CombatState {
 
     if (activeEquipment.length === 0) return;
 
-    const target = activeEquipment[Math.floor(Math.random() * activeEquipment.length)]!;
+    const target = activeEquipment[Math.floor(Math.random() * activeEquipment.length)];
+    if (!target) return;
     this.disabledEquipmentIds.add(target.equipmentId);
 
     const equipDef = EQUIPMENT[target.equipmentId];
