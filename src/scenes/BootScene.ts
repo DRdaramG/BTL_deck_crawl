@@ -1,4 +1,6 @@
 import * as Phaser from "phaser";
+import { CONSOLE_LINE_STYLE } from "../ui";
+import { addScanlines, addVignette, flicker } from "../ui";
 
 const BOOT_LINES = [
   "> INITIALIZING SYSTEM...",
@@ -9,12 +11,6 @@ const BOOT_LINES = [
   "",
   "> READY FOR DEPLOYMENT.",
 ];
-
-const LINE_STYLE: Phaser.Types.GameObjects.Text.TextStyle = {
-  fontFamily: "D2Coding",
-  fontSize: "18px",
-  color: "#00ff41",
-};
 
 const LINE_DELAY_MS = 250;
 const FLICKER_COUNT = 6;
@@ -29,6 +25,10 @@ export class BootScene extends Phaser.Scene {
   async create(): Promise<void> {
     await document.fonts.ready;
 
+    // CRT effects
+    addScanlines(this);
+    addVignette(this);
+
     const startX = 80;
     const startY = 120;
     const lineHeight = 28;
@@ -40,18 +40,8 @@ export class BootScene extends Phaser.Scene {
       elapsed = delay;
 
       this.time.delayedCall(delay, () => {
-        const text = this.add.text(startX, startY + index * lineHeight, line, LINE_STYLE);
-
-        // Flicker effect: toggle visibility rapidly a few times
-        for (let f = 0; f < FLICKER_COUNT; f++) {
-          this.time.delayedCall(f * FLICKER_INTERVAL_MS, () => {
-            text.setAlpha(f % 2 === 0 ? 0.3 : 1);
-          });
-        }
-        // Ensure fully visible after flicker
-        this.time.delayedCall(FLICKER_COUNT * FLICKER_INTERVAL_MS, () => {
-          text.setAlpha(1);
-        });
+        const text = this.add.text(startX, startY + index * lineHeight, line, CONSOLE_LINE_STYLE);
+        flicker(this, text, FLICKER_COUNT, FLICKER_INTERVAL_MS);
       });
     });
 

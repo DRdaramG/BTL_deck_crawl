@@ -40,6 +40,13 @@ BTL_deck_crawl/
 │   │   ├── ShipSetupScene.ts  # 장비 배치
 │   │   ├── BattleScene.ts  # 전투 (구현 중)
 │   │   └── RewardScene.ts  # 보상 (구현 중)
+│   ├── ui/                 # ASCII ART 렌더링 파이프라인
+│   │   ├── index.ts        # UI 모듈 진입점
+│   │   ├── Theme.ts        # 색상 팔레트, 폰트, 공용 스타일 상수
+│   │   ├── AsciiText.ts    # CJK-aware 문자열 유틸리티
+│   │   ├── BoxDrawing.ts   # 유니코드 박스 프레임 빌더
+│   │   ├── AsciiGauge.ts   # ASCII 게이지 바
+│   │   └── CrtEffect.ts   # CRT 스캔라인 · 비네팅 · 깜빡임 효과
 │   └── systems/            # 게임 로직
 │       ├── grid/           # 그리드 배치 (폴리오미노 회전, 충돌 감지)
 │       ├── deck/           # 덱 관리 (셔플, 드로우, 버리기)

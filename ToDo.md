@@ -1,6 +1,6 @@
 # BTL Deck Crawl — 개발 진척 관리 (ToDo)
 
-> **최종 수정일**: 2026-04-15  
+> **최종 수정일**: 2026-04-16  
 > **관련 문서**: `Planning.md`, `battle_info.md`, `db_info.md`
 
 ---
@@ -38,7 +38,7 @@
 - [x] TypeScript + 번들러(Vite) 프로젝트 초기 세팅
 - [x] Phaser 4 도입 및 기본 씬 구성 (`BootScene`, `ShipSelectScene`, `ShipSetupScene`, `BattleScene`, `RewardScene`)
 - [x] 개발 서버(dev server) 구성 — `npm run dev` (Vite dev server, port 3000)
-- [ ] ASCII ART 렌더링 파이프라인 구축 (lowtech scifi 콘솔 느낌)
+- [x] ASCII ART 렌더링 파이프라인 구축 (lowtech scifi 콘솔 느낌)
 - [x] 폰트 선정 — D2Coding 모노스페이스 폰트 적용
 
 ### 그리드 시스템

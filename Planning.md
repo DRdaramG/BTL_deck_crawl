@@ -341,6 +341,13 @@ src/
 │   ├── ShipSetupScene.ts  # 장비 배치 (그리드 + 드래그&드롭)
 │   ├── BattleScene.ts   # 전투 (구현 중)
 │   └── RewardScene.ts   # 보상 (구현 중)
+├── ui/                  # ASCII ART 렌더링 파이프라인 (lowtech scifi 콘솔)
+│   ├── index.ts         # UI 모듈 진입점 (barrel export)
+│   ├── Theme.ts         # 색상 팔레트, 폰트, 공용 텍스트 스타일 상수
+│   ├── AsciiText.ts     # CJK-aware 문자열 유틸리티 (폭 계산, 정렬, 자르기)
+│   ├── BoxDrawing.ts    # 유니코드 박스 프레임 빌더 (단선/이중선)
+│   ├── AsciiGauge.ts    # ASCII 게이지 바 (HP, 실드, EP 등)
+│   └── CrtEffect.ts    # CRT 스캔라인 · 비네팅 · 깜빡임 효과
 ├── systems/
 │   ├── grid/            # 그리드 배치 로직 (GridModel, Polyomino)
 │   ├── deck/            # 덱 관리 (Deck — 셔플, 드로우, 리로드)
@@ -401,5 +408,5 @@ src/
 ---
 
 *작성일: 2026-04-14*  
-*최종 수정일: 2026-04-15*  
+*최종 수정일: 2026-04-16*  
 *작성자: BTL 개발팀*
