@@ -4,8 +4,10 @@ import type {
   ShipDefinition,
   StatusEffectId,
   CardDefinition,
+  PlacedEquipment,
+  EquipmentCategory,
 } from "../../data/types";
-import { CARDS } from "../../data";
+import { CARDS, EQUIPMENT } from "../../data";
 import { CardEffectEngine, type CombatEntity, type EffectResult } from "./CardEffectEngine";
 import { Deck } from "../deck/Deck";
 
@@ -25,6 +27,11 @@ export interface CombatLog {
   message: string;
 }
 
+/** Categories that represent critical ship sections for game over condition. */
+const CRITICAL_CATEGORIES: ReadonlySet<EquipmentCategory> = new Set([
+  "crew_quarter",
+]);
+
 export class CombatState {
   player: CombatEntity;
   enemy: CombatEntity;
@@ -38,16 +45,36 @@ export class CombatState {
 
   logs: CombatLog[];
 
+  /** Equipment placed on the ship at combat start. */
+  placedEquipment: PlacedEquipment[];
+  /** Set of equipment IDs that have been destroyed during combat. */
+  disabledEquipmentIds: Set<string>;
+
+  /** Shield points — absorbs damage before armor. */
+  shield: number;
+  /** Armor points — absorbs damage after shield, before HP. */
+  armor: number;
+
   private drawPerTurn: number;
   private baseEp: number;
 
-  constructor(shipDef: ShipDefinition, enemyDef: EnemyDefinition, deck: Deck) {
+  constructor(
+    shipDef: ShipDefinition,
+    enemyDef: EnemyDefinition,
+    deck: Deck,
+    placedEquipment: PlacedEquipment[],
+  ) {
     this.shipDef = shipDef;
     this.enemyDef = enemyDef;
     this.deck = deck;
+    this.placedEquipment = placedEquipment;
+    this.disabledEquipmentIds = new Set();
 
     this.drawPerTurn = 5;
     this.baseEp = 3;
+
+    this.shield = 0;
+    this.armor = 0;
 
     this.player = {
       hp: shipDef.maxHp,
@@ -102,11 +129,7 @@ export class CombatState {
 
     this.applyShipPassive("on_turn_start");
 
-    if (this.player.hp <= 0) {
-      this.phase = "DEFEAT";
-      this.addLog("Ship destroyed!");
-      return;
-    }
+    if (this.checkDefeat()) return;
 
     this.deck.draw(this.drawPerTurn);
     this.currentIntent = this.determineIntent(this.turn);
@@ -123,6 +146,9 @@ export class CombatState {
     const hand = this.deck.getHand();
     const cardInstance = hand.find((c) => c.instanceId === instanceId);
     if (!cardInstance) return [];
+
+    // Check if card belongs to destroyed equipment
+    if (this.isCardDisabled(cardInstance.cardId)) return [];
 
     const cardDef = Deck.getDefinition(cardInstance.cardId);
     if (!cardDef) return [];
@@ -167,11 +193,7 @@ export class CombatState {
 
     CardEffectEngine.tickStatusEffects(this.player);
 
-    if (this.player.hp <= 0) {
-      this.phase = "DEFEAT";
-      this.addLog("Ship destroyed!");
-      return;
-    }
+    if (this.checkDefeat()) return;
 
     this.phase = "ENEMY_ACTION";
     this.executeEnemyTurn();
@@ -183,14 +205,7 @@ export class CombatState {
 
     switch (intent.type) {
       case "attack": {
-        const { actualDamage, blockedAmount } = CardEffectEngine.applyDamage(
-          intent.value,
-          this.player
-        );
-        if (blockedAmount > 0) {
-          this.addLog(`Blocked ${blockedAmount} damage`);
-        }
-        this.addLog(`${this.enemyDef.name} deals ${actualDamage} damage`);
+        this.applyEnemyAttack(intent.value);
         break;
       }
       case "defend":
@@ -218,13 +233,135 @@ export class CombatState {
     CardEffectEngine.tickStatusEffects(this.enemy);
     this.enemy.block = 0;
 
-    if (this.player.hp <= 0) {
-      this.phase = "DEFEAT";
-      this.addLog("Ship destroyed!");
+    if (this.checkDefeat()) return;
+
+    this.startTurn();
+  }
+
+  /**
+   * Apply enemy attack damage through the shield → armor → hull pipeline.
+   * When hull is hit, a random equipped (non-disabled) equipment takes damage.
+   */
+  private applyEnemyAttack(rawDamage: number): void {
+    let incoming = rawDamage;
+
+    // sensor_jam: reduce damage by 50%
+    const sensorJam = this.player.statusEffects.get("sensor_jam") ?? 0;
+    if (sensorJam > 0) {
+      incoming = Math.floor(incoming * 0.5);
+    }
+
+    // armor_break: increase damage taken
+    const armorBreak = this.player.statusEffects.get("armor_break") ?? 0;
+    incoming += armorBreak;
+
+    // damage_reduction
+    incoming = Math.max(0, incoming - this.player.damageReduction);
+
+    // evading
+    if (this.player.evading) {
+      this.addLog("Attack evaded!");
       return;
     }
 
-    this.startTurn();
+    // 1. Shield absorbs first
+    if (this.shield > 0) {
+      const shieldAbsorb = Math.min(this.shield, incoming);
+      this.shield -= shieldAbsorb;
+      incoming -= shieldAbsorb;
+      if (shieldAbsorb > 0) {
+        this.addLog(`Shield absorbed ${shieldAbsorb} damage (remaining: ${this.shield})`);
+      }
+    }
+
+    // 2. Block absorbs next (from block cards)
+    if (this.player.block > 0 && incoming > 0) {
+      const blockAbsorb = Math.min(this.player.block, incoming);
+      this.player.block -= blockAbsorb;
+      incoming -= blockAbsorb;
+      if (blockAbsorb > 0) {
+        this.addLog(`Block absorbed ${blockAbsorb} damage`);
+      }
+    }
+
+    // 3. Armor absorbs next
+    if (this.armor > 0 && incoming > 0) {
+      const armorAbsorb = Math.min(this.armor, incoming);
+      this.armor -= armorAbsorb;
+      incoming -= armorAbsorb;
+      if (armorAbsorb > 0) {
+        this.addLog(`Armor absorbed ${armorAbsorb} damage (remaining: ${this.armor})`);
+      }
+    }
+
+    // 4. Hull damage → HP loss + possible equipment destruction
+    if (incoming > 0) {
+      this.player.hp = Math.max(0, this.player.hp - incoming);
+      this.addLog(`Hull hit! ${incoming} damage to HP (HP: ${this.player.hp}/${this.player.maxHp})`);
+
+      // Equipment destruction: random active equipment gets hit
+      this.damageRandomEquipment();
+    }
+  }
+
+  /**
+   * Randomly destroy one active (non-disabled) equipment piece.
+   * Disables all cards provided by that equipment.
+   */
+  private damageRandomEquipment(): void {
+    const activeEquipment = this.placedEquipment.filter(
+      (pe) => !this.disabledEquipmentIds.has(pe.equipmentId),
+    );
+
+    if (activeEquipment.length === 0) return;
+
+    const target = activeEquipment[Math.floor(Math.random() * activeEquipment.length)]!;
+    this.disabledEquipmentIds.add(target.equipmentId);
+
+    const equipDef = EQUIPMENT[target.equipmentId];
+    const equipName = equipDef?.name ?? target.equipmentId;
+    this.addLog(`⚠ ${equipName} destroyed! Its cards are now disabled.`);
+
+    // Check game over condition
+    this.checkGameOver();
+  }
+
+  /**
+   * Check if all critical equipment (crew_quarter) has been destroyed.
+   * If so, trigger immediate game over.
+   */
+  private checkGameOver(): boolean {
+    // Gather all placed critical equipment IDs
+    const criticalIds: string[] = [];
+    for (const pe of this.placedEquipment) {
+      const equipDef = EQUIPMENT[pe.equipmentId];
+      if (equipDef && CRITICAL_CATEGORIES.has(equipDef.category)) {
+        criticalIds.push(pe.equipmentId);
+      }
+    }
+
+    // If no critical equipment was placed, skip this check
+    if (criticalIds.length === 0) return false;
+
+    // Check if ALL critical equipment is destroyed
+    const allDestroyed = criticalIds.every((id) => this.disabledEquipmentIds.has(id));
+    if (allDestroyed) {
+      this.phase = "DEFEAT";
+      this.addLog("All critical ship sections destroyed — GAME OVER!");
+      return true;
+    }
+
+    return false;
+  }
+
+  /** Check defeat conditions: HP or critical sections. */
+  private checkDefeat(): boolean {
+    if (this.player.hp <= 0) {
+      this.phase = "DEFEAT";
+      this.addLog("Ship destroyed!");
+      return true;
+    }
+    return this.checkGameOver();
   }
 
   getEnemyIntent(): EnemyIntent {
@@ -241,11 +378,27 @@ export class CombatState {
     const cardInstance = hand.find((c) => c.instanceId === instanceId);
     if (!cardInstance) return false;
 
+    // Check if card belongs to a destroyed equipment
+    if (this.isCardDisabled(cardInstance.cardId)) return false;
+
     const cardDef = Deck.getDefinition(cardInstance.cardId);
     if (!cardDef) return false;
 
     const epCost = this.getEffectiveEpCost(cardDef);
     return this.player.ep >= epCost;
+  }
+
+  /** Check if a card ID belongs to any destroyed equipment. */
+  isCardDisabled(cardId: string): boolean {
+    for (const pe of this.placedEquipment) {
+      if (!this.disabledEquipmentIds.has(pe.equipmentId)) continue;
+      const equipDef = EQUIPMENT[pe.equipmentId];
+      if (!equipDef) continue;
+      for (const provided of equipDef.providedCards) {
+        if (provided.cardId === cardId) return true;
+      }
+    }
+    return false;
   }
 
   isOver(): boolean {

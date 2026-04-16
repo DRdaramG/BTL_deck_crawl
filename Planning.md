@@ -383,8 +383,8 @@ src/
 - [x] 덱 클래스 구현 (shuffle, draw, discard)
 - [x] 카드 효과 실행 엔진 (17종 효과)
 - [x] 전투 상태 머신 (CombatState — 턴 관리, EP, 상태이상)
-- [ ] 단일 전투 씬 UI (BattleScene — 카드 플레이, 적 HP 관리)
-- [ ] 전투 후 장비 보상 화면 (RewardScene)
+- [x] 단일 전투 씬 UI (BattleScene — 카드 플레이, 적 HP 관리)
+- [x] 전투 후 장비 보상 화면 (RewardScene)
 
 ---
 
