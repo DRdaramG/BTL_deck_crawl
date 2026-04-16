@@ -9,39 +9,22 @@ import type {
 import { GridModel } from "../systems/grid/GridModel";
 import { rotateShape } from "../systems/grid/Polyomino";
 import { Deck } from "../systems/deck/Deck";
-
-// ─── Style constants ────────────────────────────────────────
-const GREEN = "#00ff41";
-const CYAN = "#00aaff";
-const RED = "#ff4444";
-const YELLOW = "#ffaa00";
-const DIM = "#888888";
-const FONT = "D2Coding";
-
-// ─── Grid cell characters (each cell = 2 chars wide) ────────
-const CELL_EMPTY = "··";
-const CELL_OCCUPIED = "██";
-const CELL_BLOCKED = "▒▒";
-const CELL_PREVIEW_OK = "░░";
-const CELL_PREVIEW_BAD = "▓▓";
+import {
+  Color, GradeColor, FONT_FAMILY, CHAR_HALF_W,
+  TITLE_STYLE, SUBTITLE_STYLE, HELP_STYLE, BUTTON_STYLE, CellChar,
+  displayWidth, truncate, padEnd,
+  buildPanel, BOX_DOUBLE,
+  addScanlines, addVignette,
+} from "../ui";
 
 // ─── Layout constants ───────────────────────────────────────
 const GRID_FONT_SIZE = 16;
-const CHAR_W = 9.6; // D2Coding half-width char at 16px
-const CELL_PX_W = CHAR_W * 2; // each cell = 2 chars wide
+const CELL_PX_W = CHAR_HALF_W * 2; // each cell = 2 chars wide
 const CELL_PX_H = GRID_FONT_SIZE; // each cell = 1 line tall
 
 const LEFT_PANEL_W = 700;
 const RIGHT_X = 720;
 const RIGHT_W = 540;
-
-// ─── Grade display colours ──────────────────────────────────
-const GRADE_COLOR: Record<string, string> = {
-  common: DIM,
-  rare: CYAN,
-  epic: "#cc66ff",
-  legendary: YELLOW,
-};
 
 // ─── Scene ──────────────────────────────────────────────────
 
@@ -90,13 +73,13 @@ export class ShipSetupScene extends Phaser.Scene {
   create(): void {
     const W = this.scale.width;
 
+    // CRT effects
+    addScanlines(this);
+    addVignette(this);
+
     // ── Title ──
     this.titleText = this.add
-      .text(W / 2, 16, "═══ EQUIPMENT SETUP ═══", {
-        fontFamily: FONT,
-        fontSize: "24px",
-        color: GREEN,
-      })
+      .text(W / 2, 16, "═══ EQUIPMENT SETUP ═══", TITLE_STYLE)
       .setOrigin(0.5, 0);
 
     // ── Ship name subtitle ──
@@ -105,16 +88,16 @@ export class ShipSetupScene extends Phaser.Scene {
         W / 2,
         48,
         `${this.shipDef.nameKo} (${this.shipDef.name})  HP: ${this.shipDef.maxHp}`,
-        { fontFamily: FONT, fontSize: "14px", color: DIM },
+        SUBTITLE_STYLE,
       )
       .setOrigin(0.5, 0);
 
     // ── Grid text (left panel) ──
     this.gridText = this.add
       .text(0, 0, "", {
-        fontFamily: FONT,
+        fontFamily: FONT_FAMILY,
         fontSize: `${GRID_FONT_SIZE}px`,
-        color: GREEN,
+        color: Color.GREEN,
         lineSpacing: 0,
       })
       .setInteractive();
@@ -124,48 +107,34 @@ export class ShipSetupScene extends Phaser.Scene {
 
     // ── Equipment list text (right panel, top) ──
     this.equipmentListText = this.add.text(RIGHT_X, 80, "", {
-      fontFamily: FONT,
+      fontFamily: FONT_FAMILY,
       fontSize: "14px",
-      color: GREEN,
+      color: Color.GREEN,
       lineSpacing: 2,
     });
     this.equipmentListText.setInteractive();
 
     // ── Deck preview text (right panel, bottom) ──
     this.deckPreviewText = this.add.text(RIGHT_X, 500, "", {
-      fontFamily: FONT,
+      fontFamily: FONT_FAMILY,
       fontSize: "14px",
-      color: GREEN,
+      color: Color.GREEN,
       lineSpacing: 1,
     });
 
     // ── Info / status bar ──
     this.infoText = this.add
-      .text(LEFT_PANEL_W / 2, 770, "Click equipment on the right, then click grid to place.", {
-        fontFamily: FONT,
-        fontSize: "14px",
-        color: DIM,
-      })
+      .text(LEFT_PANEL_W / 2, 770, "Click equipment on the right, then click grid to place.", SUBTITLE_STYLE)
       .setOrigin(0.5, 0);
 
     // ── Help text ──
     this.helpText = this.add
-      .text(LEFT_PANEL_W / 2, 785, "R / Right-click: Rotate    Click placed: Remove", {
-        fontFamily: FONT,
-        fontSize: "12px",
-        color: DIM,
-      })
+      .text(LEFT_PANEL_W / 2, 785, "R / Right-click: Rotate    Click placed: Remove", HELP_STYLE)
       .setOrigin(0.5, 0);
 
     // ── Deploy button ──
     this.deployBtn = this.add
-      .text(RIGHT_X + RIGHT_W / 2, 755, ">> DEPLOY >>", {
-        fontFamily: FONT,
-        fontSize: "20px",
-        color: "#0a0a0a",
-        backgroundColor: GREEN,
-        padding: { x: 24, y: 8 },
-      })
+      .text(RIGHT_X + RIGHT_W / 2, 755, ">> DEPLOY >>", BUTTON_STYLE)
       .setOrigin(0.5, 0)
       .setInteractive({ useHandCursor: true });
     this.deployBtn.on("pointerdown", () => this.deploy());
@@ -237,7 +206,7 @@ export class ShipSetupScene extends Phaser.Scene {
     const labelHeaderLines = 1;
 
     // Total text width = prefix + cols*2 chars
-    const totalTextW = (labelPrefixChars + cols * 2) * CHAR_W;
+    const totalTextW = (labelPrefixChars + cols * 2) * CHAR_HALF_W;
     // Total text height = header + rows lines
     const totalTextH = (labelHeaderLines + rows) * CELL_PX_H;
 
@@ -251,7 +220,7 @@ export class ShipSetupScene extends Phaser.Scene {
     this.gridText.setPosition(textX, textY);
 
     // The data cells start after the label prefix and header
-    this.gridOriginX = labelPrefixChars * CHAR_W;
+    this.gridOriginX = labelPrefixChars * CHAR_HALF_W;
     this.gridOriginY = labelHeaderLines * CELL_PX_H;
   }
 
@@ -334,18 +303,18 @@ export class ShipSetupScene extends Phaser.Scene {
         const preview = previewCells.get(key);
 
         if (preview !== undefined) {
-          line += preview ? CELL_PREVIEW_OK : CELL_PREVIEW_BAD;
+          line += preview ? CellChar.PREVIEW_OK : CellChar.PREVIEW_BAD;
         } else {
           const state = this.gridModel.getCell(r, c);
           switch (state) {
             case "EMPTY":
-              line += CELL_EMPTY;
+              line += CellChar.EMPTY;
               break;
             case "OCCUPIED":
-              line += CELL_OCCUPIED;
+              line += CellChar.OCCUPIED;
               break;
             case "BLOCKED":
-              line += CELL_BLOCKED;
+              line += CellChar.BLOCKED;
               break;
           }
         }
@@ -382,19 +351,19 @@ export class ShipSetupScene extends Phaser.Scene {
       const label = c.toString();
       header += label.length === 1 ? label + " " : label;
     }
-    parts.push(`[color=${DIM}]${header}[/color]`);
+    parts.push(`[color=${Color.DIM}]${header}[/color]`);
 
     for (let r = 0; r < rows; r++) {
       const rowLabel = r.toString().padStart(2, " ") + " ";
-      let line = `[color=${DIM}]${rowLabel}[/color]`;
+      let line = `[color=${Color.DIM}]${rowLabel}[/color]`;
 
       for (let c = 0; c < cols; c++) {
         const key = `${r},${c}`;
         const preview = previewCells.get(key);
 
         if (preview !== undefined) {
-          const color = preview ? GREEN : RED;
-          const ch = preview ? CELL_PREVIEW_OK : CELL_PREVIEW_BAD;
+          const color = preview ? Color.GREEN : Color.RED;
+          const ch = preview ? CellChar.PREVIEW_OK : CellChar.PREVIEW_BAD;
           line += `[color=${color}]${ch}[/color]`;
         } else {
           const state = this.gridModel.getCell(r, c);
@@ -403,12 +372,12 @@ export class ShipSetupScene extends Phaser.Scene {
           if (state === "OCCUPIED" && owner) {
             // Highlight the selected equipment's cells in yellow
             const color =
-              owner === this.selectedEquipmentId ? YELLOW : CYAN;
-            line += `[color=${color}]${CELL_OCCUPIED}[/color]`;
+              owner === this.selectedEquipmentId ? Color.YELLOW : Color.CYAN;
+            line += `[color=${color}]${CellChar.OCCUPIED}[/color]`;
           } else if (state === "BLOCKED") {
-            line += `[color=#333333]${CELL_BLOCKED}[/color]`;
+            line += `[color=${Color.DARK}]${CellChar.BLOCKED}[/color]`;
           } else {
-            line += `[color=${DIM}]${CELL_EMPTY}[/color]`;
+            line += `[color=${Color.DIM}]${CellChar.EMPTY}[/color]`;
           }
         }
       }
@@ -435,21 +404,13 @@ export class ShipSetupScene extends Phaser.Scene {
       this.gridModel.getPlacedEquipment().map((p) => p.equipmentId),
     );
 
-    const lines: string[] = [];
-    this.equipListZones = [];
-
-    lines.push("╔══════════════════════════════════╗");
-    lines.push("║     AVAILABLE EQUIPMENT          ║");
-    lines.push("╠══════════════════════════════════╣");
+    const panel = buildPanel(34, BOX_DOUBLE)
+      .title("AVAILABLE EQUIPMENT")
+      .separator();
 
     const lineH = 16; // approximate line height at 14px + 2 spacing
     let currentY = lineH * 3; // after the 3 header lines
-
-    // Collect unique equipment IDs (ship may have duplicates)
-    const allIds = [...new Set([
-      ...this.availableEquipment,
-      ...placed,
-    ])];
+    this.equipListZones = [];
 
     // Show all starting equipment
     for (const eqId of this.shipDef.startingEquipment) {
@@ -463,12 +424,10 @@ export class ShipSetupScene extends Phaser.Scene {
       const marker = isSelected ? "►" : " ";
       const grade = equipDef.grade.toUpperCase().padEnd(9);
 
-      const name = this.truncate(equipDef.name, 14);
-      const shape = this.truncate(equipDef.shapeDescription, 8);
+      const name = truncate(equipDef.name, 14);
+      const shape = truncate(equipDef.shapeDescription, 8);
 
-      lines.push(
-        `║${marker} ${status} ${name} ${shape} ${grade}║`,
-      );
+      panel.raw(`${marker} ${status} ${name} ${shape} ${grade}`);
 
       this.equipListZones.push({
         y: currentY,
@@ -478,39 +437,38 @@ export class ShipSetupScene extends Phaser.Scene {
       currentY += lineH;
     }
 
-    lines.push("╠══════════════════════════════════╣");
+    panel.separator();
     currentY += lineH;
 
     // Selected equipment details
     if (this.selectedEquipmentId) {
       const eq = EQUIPMENT[this.selectedEquipmentId];
       if (eq) {
-        lines.push(`║ Selected: ${this.truncate(eq.name, 21)}  ║`);
-        lines.push(`║ Rotation: ${this.currentRotation}°`.padEnd(35) + "║");
-        lines.push(`║ Shape: ${eq.shapeDescription}`.padEnd(35) + "║");
+        panel.left(`Selected: ${truncate(eq.name, 21)}`);
+        panel.left(`Rotation: ${this.currentRotation}°`);
+        panel.left(`Shape: ${eq.shapeDescription}`);
 
         // Show shape preview
         const rotated = rotateShape(eq.shape, this.currentRotation);
         const shapeLines = this.renderShapePreview(rotated);
         for (const sl of shapeLines) {
-          lines.push(`║  ${sl}`.padEnd(35) + "║");
+          panel.left(` ${sl}`);
         }
 
         // Show provided cards
-        lines.push("║ Cards:".padEnd(35) + "║");
+        panel.left("Cards:");
         for (const pc of eq.providedCards) {
           const card = CARDS[pc.cardId];
           const cardName = card ? card.name : pc.cardId;
-          lines.push(`║   ${cardName} ×${pc.count}`.padEnd(35) + "║");
+          panel.left(`  ${cardName} ×${pc.count}`);
         }
       }
     } else {
-      lines.push("║ No equipment selected.".padEnd(35) + "║");
+      panel.left("No equipment selected.");
     }
 
-    lines.push("╚══════════════════════════════════╝");
-
-    this.equipmentListText.setText(lines.join("\n"));
+    panel.close();
+    this.equipmentListText.setText(panel.toString());
   }
 
   /** Render a small ASCII preview of an equipment shape. */
@@ -539,13 +497,12 @@ export class ShipSetupScene extends Phaser.Scene {
   private renderDeckPreview(): void {
     const placed = this.gridModel.getPlacedEquipment();
 
-    const lines: string[] = [];
-    lines.push("╔══════════════════════════════════╗");
-    lines.push("║          DECK PREVIEW            ║");
-    lines.push("╠══════════════════════════════════╣");
+    const panel = buildPanel(34, BOX_DOUBLE)
+      .title("DECK PREVIEW")
+      .separator();
 
     if (placed.length === 0) {
-      lines.push("║  (no equipment placed)".padEnd(35) + "║");
+      panel.left("(no equipment placed)");
     } else {
       // Aggregate cards from placed equipment
       const cardCounts = new Map<string, number>();
@@ -565,16 +522,16 @@ export class ShipSetupScene extends Phaser.Scene {
         const card = CARDS[cardId];
         const name = card ? card.name : cardId;
         const ep = card ? `${card.epCost}EP` : "";
-        lines.push(`║  ${name} ×${count}  ${ep}`.padEnd(35) + "║");
+        panel.left(`${name} ×${count}  ${ep}`);
         totalCards += count;
       }
 
-      lines.push("╠══════════════════════════════════╣");
-      lines.push(`║  Total: ${totalCards} cards`.padEnd(35) + "║");
+      panel.separator();
+      panel.left(`Total: ${totalCards} cards`);
     }
 
-    lines.push("╚══════════════════════════════════╝");
-    this.deckPreviewText.setText(lines.join("\n"));
+    panel.close();
+    this.deckPreviewText.setText(panel.toString());
   }
 
   // ─── Interaction handlers ─────────────────────────────────
@@ -589,7 +546,7 @@ export class ShipSetupScene extends Phaser.Scene {
         this.gridModel.getPlacedEquipment().map((p) => p.equipmentId),
       );
       if (placedIds.has(this.selectedEquipmentId)) {
-        this.setInfo("Equipment already placed. Click it in the list to remove first.", RED);
+        this.setInfo("Equipment already placed. Click it in the list to remove first.", Color.RED);
         return;
       }
 
@@ -601,12 +558,12 @@ export class ShipSetupScene extends Phaser.Scene {
         )
       ) {
         this.gridModel.place(equipDef, { row, col }, this.currentRotation);
-        this.setInfo(`Placed ${equipDef.name} at (${row}, ${col})`, GREEN);
+        this.setInfo(`Placed ${equipDef.name} at (${row}, ${col})`, Color.GREEN);
         this.selectedEquipmentId = null;
         this.currentRotation = 0;
         this.refreshAll();
       } else {
-        this.setInfo("Cannot place here — cells blocked or occupied.", RED);
+        this.setInfo("Cannot place here — cells blocked or occupied.", Color.RED);
       }
     } else {
       // No equipment selected — check if clicking on an occupied cell
@@ -620,7 +577,7 @@ export class ShipSetupScene extends Phaser.Scene {
             if (eq) {
               this.setInfo(
                 `${eq.name} (${eq.grade}) — ${eq.shapeDescription}  |  ${eq.description}`,
-                CYAN,
+                Color.CYAN,
               );
             }
             break;
@@ -639,7 +596,7 @@ export class ShipSetupScene extends Phaser.Scene {
       // Remove it
       this.gridModel.remove(equipmentId);
       const eq = EQUIPMENT[equipmentId];
-      this.setInfo(`Removed ${eq?.name ?? equipmentId}`, YELLOW);
+      this.setInfo(`Removed ${eq?.name ?? equipmentId}`, Color.YELLOW);
       if (this.selectedEquipmentId === equipmentId) {
         this.selectedEquipmentId = null;
       }
@@ -655,14 +612,14 @@ export class ShipSetupScene extends Phaser.Scene {
       // Deselect
       this.selectedEquipmentId = null;
       this.currentRotation = 0;
-      this.setInfo("Equipment deselected.", DIM);
+      this.setInfo("Equipment deselected.", Color.DIM);
     } else {
       this.selectedEquipmentId = equipmentId;
       this.currentRotation = 0;
       const eq = EQUIPMENT[equipmentId];
       this.setInfo(
         `Selected ${eq?.name ?? equipmentId}. Click on grid to place. R to rotate.`,
-        YELLOW,
+        Color.YELLOW,
       );
     }
     this.renderEquipmentList();
@@ -674,7 +631,7 @@ export class ShipSetupScene extends Phaser.Scene {
     const rotations: Rotation[] = [0, 90, 180, 270];
     const idx = rotations.indexOf(this.currentRotation);
     this.currentRotation = rotations[(idx + 1) % 4]!;
-    this.setInfo(`Rotation: ${this.currentRotation}°`, YELLOW);
+    this.setInfo(`Rotation: ${this.currentRotation}°`, Color.YELLOW);
     this.renderEquipmentList();
     this.renderGrid();
   }
@@ -682,7 +639,7 @@ export class ShipSetupScene extends Phaser.Scene {
   private deploy(): void {
     const placed = this.gridModel.getPlacedEquipment();
     if (placed.length === 0) {
-      this.setInfo("Place at least one equipment before deploying!", RED);
+      this.setInfo("Place at least one equipment before deploying!", Color.RED);
       return;
     }
 
@@ -691,7 +648,7 @@ export class ShipSetupScene extends Phaser.Scene {
       (e) => e.zoneIds.includes(1) && !e.isBoss && !e.isElite,
     );
     if (zone1Enemies.length === 0) {
-      this.setInfo("No enemies available for zone 1!", RED);
+      this.setInfo("No enemies available for zone 1!", Color.RED);
       return;
     }
     const enemy = zone1Enemies[Math.floor(Math.random() * zone1Enemies.length)]!;
@@ -714,45 +671,5 @@ export class ShipSetupScene extends Phaser.Scene {
   private setInfo(message: string, color: string): void {
     this.infoText.setText(message);
     this.infoText.setColor(color);
-  }
-
-  private truncate(s: string, maxLen: number): string {
-    if (this.displayWidth(s) <= maxLen) {
-      return this.padEnd(s, maxLen);
-    }
-    let result = "";
-    let w = 0;
-    for (const ch of s) {
-      const cw = this.charWidth(ch);
-      if (w + cw > maxLen - 2) break;
-      result += ch;
-      w += cw;
-    }
-    return result + "..";
-  }
-
-  private padEnd(s: string, width: number): string {
-    const gap = Math.max(0, width - this.displayWidth(s));
-    return s + " ".repeat(gap);
-  }
-
-  private displayWidth(s: string): number {
-    let w = 0;
-    for (const ch of s) {
-      w += this.charWidth(ch);
-    }
-    return w;
-  }
-
-  private charWidth(ch: string): number {
-    const cp = ch.codePointAt(0) ?? 0;
-    return (cp >= 0xac00 && cp <= 0xd7af) ||
-      (cp >= 0x1100 && cp <= 0x11ff) ||
-      (cp >= 0x3000 && cp <= 0x9fff) ||
-      (cp >= 0xf900 && cp <= 0xfaff) ||
-      (cp >= 0xff01 && cp <= 0xff60) ||
-      (cp >= 0x2e80 && cp <= 0x2eff)
-      ? 2
-      : 1;
   }
 }

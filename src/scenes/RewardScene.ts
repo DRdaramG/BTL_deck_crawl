@@ -1,4 +1,5 @@
 import * as Phaser from "phaser";
+import { TITLE_STYLE, SUBTITLE_STYLE, addScanlines, addVignette } from "../ui";
 
 /**
  * RewardScene — 전투 후 보상 씬 (M1 스텁)
@@ -15,28 +16,20 @@ export class RewardScene extends Phaser.Scene {
     const W = this.scale.width;
     const H = this.scale.height;
 
+    // CRT effects
+    addScanlines(this);
+    addVignette(this);
+
     this.add
-      .text(W / 2, H / 2 - 40, "═══ REWARD ═══", {
-        fontFamily: "D2Coding",
-        fontSize: "24px",
-        color: "#00ff41",
-      })
+      .text(W / 2, H / 2 - 40, "═══ REWARD ═══", TITLE_STYLE)
       .setOrigin(0.5);
 
     this.add
-      .text(W / 2, H / 2 + 10, "> 보상 시스템 구현 예정 (M1)", {
-        fontFamily: "D2Coding",
-        fontSize: "16px",
-        color: "#888888",
-      })
+      .text(W / 2, H / 2 + 10, "> 보상 시스템 구현 예정 (M1)", SUBTITLE_STYLE)
       .setOrigin(0.5);
 
     this.add
-      .text(W / 2, H / 2 + 50, "[ ESC — 함선 선택으로 돌아가기 ]", {
-        fontFamily: "D2Coding",
-        fontSize: "14px",
-        color: "#888888",
-      })
+      .text(W / 2, H / 2 + 50, "[ ESC — 함선 선택으로 돌아가기 ]", SUBTITLE_STYLE)
       .setOrigin(0.5);
 
     const kb = this.input.keyboard;
