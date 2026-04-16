@@ -78,6 +78,9 @@ export class EventScene extends Phaser.Scene {
     this.effectMessages = [];
 
     // Pick a random event
+    if (EVENTS.length === 0) {
+      throw new Error("No events defined in EVENTS array");
+    }
     this.event = EVENTS[Math.floor(Math.random() * EVENTS.length)]!;
   }
 
@@ -140,6 +143,9 @@ export class EventScene extends Phaser.Scene {
    * Resolve which outcome occurs based on probability weights.
    */
   private resolveOutcome(outcomes: EventOutcome[]): EventOutcome {
+    if (outcomes.length === 0) {
+      throw new Error("No outcomes defined for event choice");
+    }
     const roll = Math.random();
     let cumulative = 0;
     for (const outcome of outcomes) {
@@ -229,18 +235,25 @@ export class EventScene extends Phaser.Scene {
 
     if (targetId === "random_common") {
       const candidates = allEquipKeys.filter((id) => EQUIPMENT[id]?.grade === "common");
-      const picked = candidates[Math.floor(Math.random() * candidates.length)];
-      return picked ? EQUIPMENT[picked] ?? null : null;
+      return this.pickRandomEquipment(candidates);
     }
 
     if (targetId === "random_rare") {
       const candidates = allEquipKeys.filter((id) => EQUIPMENT[id]?.grade === "rare");
-      const picked = candidates[Math.floor(Math.random() * candidates.length)];
-      return picked ? EQUIPMENT[picked] ?? null : null;
+      return this.pickRandomEquipment(candidates);
     }
 
     // Specific equipment ID
     return EQUIPMENT[targetId] ?? null;
+  }
+
+  /**
+   * Pick a random equipment from a list of candidate IDs.
+   */
+  private pickRandomEquipment(candidateIds: string[]): EquipmentDefinition | null {
+    if (candidateIds.length === 0) return null;
+    const picked = candidateIds[Math.floor(Math.random() * candidateIds.length)];
+    return picked ? EQUIPMENT[picked] ?? null : null;
   }
 
   // ─── Render Helpers ───────────────────────────────────────
