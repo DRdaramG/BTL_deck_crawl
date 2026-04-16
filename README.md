@@ -38,8 +38,12 @@ BTL_deck_crawl/
 │   │   ├── BootScene.ts    # 부팅 애니메이션
 │   │   ├── ShipSelectScene.ts # 함선 선택
 │   │   ├── ShipSetupScene.ts  # 장비 배치
-│   │   ├── BattleScene.ts  # 전투 (구현 중)
-│   │   └── RewardScene.ts  # 보상 (구현 중)
+│   │   ├── StageMapScene.ts   # 스테이지 맵
+│   │   ├── BattleScene.ts  # 전투
+│   │   ├── RewardScene.ts  # 보상
+│   │   ├── ShopScene.ts    # 상점
+│   │   ├── EventScene.ts   # 이벤트 (선택지 기반 랜덤 이벤트)
+│   │   └── RepairScene.ts  # 수리 기지 (HP 회복)
 │   ├── ui/                 # ASCII ART 렌더링 파이프라인
 │   │   ├── index.ts        # UI 모듈 진입점
 │   │   ├── Theme.ts        # 색상 팔레트, 폰트, 공용 스타일 상수
@@ -78,11 +82,11 @@ npm run preview
 
 ## 개발 현황
 
-현재 **M1 (프로토타입)** 단계 진행 중입니다.
+현재 **M2 (알파)** 단계 진행 중입니다.
 
 - ✅ M0 — 기획 완료 (기획서, 데이터 설계, 전투 흐름 문서, 정적 데이터)
-- 🔧 M1 — 프로토타입 (프로젝트 세팅 완료, 그리드/덱/전투 시스템 구현, 전투 UI 구현 중)
-- ⬜ M2 — 알파 (구역 1 완주 가능)
+- ✅ M1 — 프로토타입 (그리드/덱/전투 시스템 구현, 전투 UI 구현 완료)
+- 🔧 M2 — 알파 (스테이지 맵, 상점, 이벤트, 수리 기지 구현 완료, 구역 1 완주 가능)
 - ⬜ M3 — 베타 (풀 런 플레이 가능)
 - ⬜ M4 — 정식 배포
 
