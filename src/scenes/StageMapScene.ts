@@ -161,7 +161,7 @@ export class StageMapScene extends Phaser.Scene {
       case "repair":
         // These scenes are not yet implemented (M2 future tasks).
         // For now, show a placeholder and return to map.
-        this.showPlaceholder(node.type, commonData);
+        this.showPlaceholder(node.type);
         break;
     }
   }
@@ -170,7 +170,7 @@ export class StageMapScene extends Phaser.Scene {
    * Placeholder for unimplemented node types.
    * Shows a brief message and returns to the map.
    */
-  private showPlaceholder(type: NodeType, _commonData: object): void {
+  private showPlaceholder(type: NodeType): void {
     this.clearUI();
     const sceneW = this.scale.width;
     const sceneH = this.scale.height;
@@ -412,11 +412,20 @@ export class StageMapScene extends Phaser.Scene {
   // ─── Player Info Panel ────────────────────────────────────
 
   private renderPlayerInfo(sceneW: number, sceneH: number): void {
+    // Calculate layer progress: highest visited layer + 1
+    let currentLayer = 0;
+    for (const nodeId of this.visitedNodeIds) {
+      const node = findNode(this.stageMap, nodeId);
+      if (node && node.layer + 1 > currentLayer) {
+        currentLayer = node.layer + 1;
+      }
+    }
+
     const panelIW = 40;
     const panel = buildPanel(panelIW, BOX_SINGLE)
       .left(`HP: ${this.currentHp}/${this.maxHp}`)
       .left(`Scrap: ${this.scrap}  Data Core: ${this.dataCore}`)
-      .left(`Progress: ${this.visitedNodeIds.length}/${this.stageMap.layers.length} layers`)
+      .left(`Progress: ${currentLayer}/${this.stageMap.layers.length} layers`)
       .close();
 
     this.addText(16, sceneH - 80, panel.toString(), {

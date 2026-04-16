@@ -186,7 +186,8 @@ function pickEnemy(zoneId: number, nodeType: NodeType): string {
     }
   }
 
-  const enemy = candidates[Math.floor(Math.random() * candidates.length)]!;
+  const enemy = candidates[Math.floor(Math.random() * candidates.length)];
+  if (!enemy) return "pirate_scout"; // fallback
   return enemy.id;
 }
 
