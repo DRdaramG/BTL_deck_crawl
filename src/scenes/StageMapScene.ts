@@ -156,7 +156,18 @@ export class StageMapScene extends Phaser.Scene {
         });
         break;
       }
-      case "shop":
+      case "shop": {
+        this.scene.start("ShopScene", {
+          shipId: this.shipId,
+          placedEquipment: this.placedEquipment,
+          currentHp: this.currentHp,
+          maxHp: this.maxHp,
+          scrap: this.scrap,
+          dataCore: this.dataCore,
+          returnData: commonData,
+        });
+        break;
+      }
       case "event":
       case "repair":
         // These scenes are not yet implemented (M2 future tasks).
@@ -188,9 +199,6 @@ export class StageMapScene extends Phaser.Scene {
 
     let description: string;
     switch (type) {
-      case "shop":
-        description = "상점 기능은 아직 구현 중입니다.\n스크랩을 사용해 장비를 구매할 수 있게 될 예정입니다.";
-        break;
       case "event":
         description = "이벤트 기능은 아직 구현 중입니다.\n선택지 기반 랜덤 이벤트가 추가될 예정입니다.";
         break;

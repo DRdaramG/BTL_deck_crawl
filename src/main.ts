@@ -5,6 +5,7 @@ import { ShipSetupScene } from "./scenes/ShipSetupScene";
 import { StageMapScene } from "./scenes/StageMapScene";
 import { BattleScene } from "./scenes/BattleScene";
 import { RewardScene } from "./scenes/RewardScene";
+import { ShopScene } from "./scenes/ShopScene";
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -12,7 +13,7 @@ const config: Phaser.Types.Core.GameConfig = {
   height: 800,
   parent: "game-container",
   backgroundColor: "#0a0a0a",
-  scene: [BootScene, ShipSelectScene, ShipSetupScene, StageMapScene, BattleScene, RewardScene],
+  scene: [BootScene, ShipSelectScene, ShipSetupScene, StageMapScene, BattleScene, RewardScene, ShopScene],
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
