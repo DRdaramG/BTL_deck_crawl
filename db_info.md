@@ -482,7 +482,9 @@ src/
 │   ├── StageMapScene.ts   # 스테이지 맵 (구역별 노드 맵 UI)
 │   ├── BattleScene.ts     # 전투 (구현 완료)
 │   ├── RewardScene.ts     # 보상 (구현 완료)
-│   └── ShopScene.ts       # 상점 (장비 구매, 카드 업그레이드, 장비 제거)
+│   ├── ShopScene.ts       # 상점 (장비 구매, 카드 업그레이드, 장비 제거)
+│   ├── EventScene.ts      # 이벤트 (선택지 기반 랜덤 이벤트, 효과 처리)
+│   └── RepairScene.ts     # 수리 기지 (HP 회복)
 ├── systems/               # 게임 시스템 로직
 │   ├── grid/
 │   │   ├── GridModel.ts   # 그리드 모델 (셀 상태, 배치/제거, 충돌 감지)
