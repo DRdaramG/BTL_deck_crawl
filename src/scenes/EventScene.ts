@@ -82,7 +82,7 @@ export class EventScene extends Phaser.Scene {
     // Pick a random event, filtered by zone if available
     const zoneId = data.zoneId;
     let candidates = EVENTS;
-    if (zoneId != null) {
+    if (zoneId !== undefined) {
       // Include events with no zoneIds (global) or matching zoneId
       candidates = EVENTS.filter(
         (e) => e.zoneIds == null || e.zoneIds.includes(zoneId),
