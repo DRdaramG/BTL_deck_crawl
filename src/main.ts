@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import * as Phaser from "phaser";
 import { BootScene } from "./scenes/BootScene";
 import { ShipSelectScene } from "./scenes/ShipSelectScene";
 import { ShipSetupScene } from "./scenes/ShipSetupScene";

@@ -474,6 +474,22 @@ EventChoice
 
 ```
 src/
+├── main.ts                # Phaser Game 초기화 (씬 등록, 스케일 설정)
+├── scenes/                # Phaser 씬
+│   ├── BootScene.ts       # 부팅 애니메이션 (터미널 스타일)
+│   ├── ShipSelectScene.ts # 함선 선택 (10종 카드형 UI)
+│   ├── ShipSetupScene.ts  # 장비 배치 (그리드 + 드래그&드롭)
+│   ├── BattleScene.ts     # 전투 (구현 중)
+│   └── RewardScene.ts     # 보상 (구현 중)
+├── systems/               # 게임 시스템 로직
+│   ├── grid/
+│   │   ├── GridModel.ts   # 그리드 모델 (셀 상태, 배치/제거, 충돌 감지)
+│   │   └── Polyomino.ts   # 폴리오미노 회전/정규화 유틸
+│   ├── deck/
+│   │   └── Deck.ts        # 덱 관리 (Queue/Hand/Exhaust/Exclude)
+│   └── combat/
+│       ├── CardEffectEngine.ts  # 카드 효과 실행 (17종 효과, 상태이상 처리)
+│       └── CombatState.ts      # 전투 상태 머신 (턴 진행, EP, 적 AI)
 └── data/
     ├── index.ts           # 데이터 모듈 진입점 (모든 export 집합)
     ├── types.ts           # 전체 타입/인터페이스 정의

@@ -21,12 +21,12 @@
 - [x] 데이터베이스 설계 문서 작성 (`db_info.md`)
 - [x] 전투 흐름 문서 작성 (`battle_info.md`)
 - [x] 정적 데이터 타입 정의 (`src/data/types.ts`)
-- [x] 카드 데이터 정의 (`src/data/cards.ts`)
-- [x] 장비 데이터 정의 (`src/data/equipment.ts`)
-- [x] 우주선 데이터 정의 (`src/data/ships.ts`)
-- [x] 상태이상 데이터 정의 (`src/data/statusEffects.ts`)
-- [x] 구역/적 데이터 정의 (`src/data/zones.ts`)
-- [x] 이벤트 데이터 정의 (`src/data/events.ts`)
+- [x] 카드 데이터 정의 (`src/data/cards.ts` — 191종)
+- [x] 장비 데이터 정의 (`src/data/equipment.ts` — 233종)
+- [x] 우주선 데이터 정의 (`src/data/ships.ts` — 10종)
+- [x] 상태이상 데이터 정의 (`src/data/statusEffects.ts` — 8종)
+- [x] 구역/적 데이터 정의 (`src/data/zones.ts` — 구역 4개, 적 14종)
+- [x] 이벤트 데이터 정의 (`src/data/events.ts` — 4종)
 - [x] ToDo 체크리스트 작성 (`ToDo.md`)
 
 ---
@@ -35,50 +35,50 @@
 
 ### 프로젝트 세팅
 
-- [ ] TypeScript + 번들러(Webpack/Vite) 프로젝트 초기 세팅
-- [ ] Phaser 3 도입 및 기본 씬 구성
-- [ ] 개발 서버(dev server) 구성 — 로컬 테스트용
+- [x] TypeScript + 번들러(Vite) 프로젝트 초기 세팅
+- [x] Phaser 4 도입 및 기본 씬 구성 (`BootScene`, `ShipSelectScene`, `ShipSetupScene`, `BattleScene`, `RewardScene`)
+- [x] 개발 서버(dev server) 구성 — `npm run dev` (Vite dev server, port 3000)
 - [ ] ASCII ART 렌더링 파이프라인 구축 (lowtech scifi 콘솔 느낌)
-- [ ] 폰트 선정 — 모노스페이스/터미널 스타일 폰트 적용
+- [x] 폰트 선정 — D2Coding 모노스페이스 폰트 적용
 
 ### 그리드 시스템
 
-- [ ] 그리드 데이터 모델 구현 (2D 배열, 셀 상태: EMPTY / OCCUPIED / BLOCKED)
-- [ ] 폴리오미노 배치 로직 구현 (회전 0°/90°/180°/270°)
-- [ ] 충돌 감지 로직 구현 (겹침 방지)
-- [ ] 장비 배치/탈착 시 덱 자동 업데이트
-- [ ] ASCII ART 기반 그리드 렌더링
+- [x] 그리드 데이터 모델 구현 (`src/systems/grid/GridModel.ts` — 2D 배열, 셀 상태: EMPTY / OCCUPIED / BLOCKED)
+- [x] 폴리오미노 배치 로직 구현 (`src/systems/grid/Polyomino.ts` — 회전 0°/90°/180°/270°)
+- [x] 충돌 감지 로직 구현 (`GridModel.canPlace()` — 겹침 방지)
+- [x] 장비 배치/탈착 시 덱 자동 업데이트
+- [x] ASCII ART 기반 그리드 렌더링 (`ShipSetupScene`)
 
 ### 장비 배치 UI
 
-- [ ] 드래그 앤 드롭 장비 배치 인터페이스
-- [ ] 배치 가능/불가 피드백 (하이라이트)
-- [ ] 장비 회전 조작 (우클릭 or 버튼)
-- [ ] 현재 덱 미리보기 패널 (실시간 업데이트)
+- [x] 드래그 앤 드롭 장비 배치 인터페이스 (`ShipSetupScene`)
+- [x] 배치 가능/불가 피드백 (하이라이트)
+- [x] 장비 회전 조작 (우클릭 or 버튼)
+- [x] 현재 덱 미리보기 패널 (실시간 업데이트)
 
 ### 덱 / 카드 시스템
 
-- [ ] 덱 클래스 구현 (대기열 Queue, 손패 Hand, 소진 Exhaust, 제외 Exclude)
-- [ ] 셔플, 드로우, 버리기 기능
-- [ ] 덱 리로드 로직 (대기열 소진 시 Exhaust → Queue)
-- [ ] 카드 효과 실행 엔진 (damage, block, heal, evade, apply_status 등)
+- [x] 덱 클래스 구현 (`src/systems/deck/Deck.ts` — 대기열 Queue, 손패 Hand, 소진 Exhaust, 제외 Exclude)
+- [x] 셔플, 드로우, 버리기 기능
+- [x] 덱 리로드 로직 (대기열 소진 시 Exhaust → Queue)
+- [x] 카드 효과 실행 엔진 (`src/systems/combat/CardEffectEngine.ts` — damage, block, heal, evade, apply_status 등 17종)
 
 ### 전투 시스템
 
-- [ ] 전투 시작 세팅 (시작 거리, 턴 순서 결정)
-- [ ] EP(Energy Point) / AP(Action Point) 자원 관리
-- [ ] 턴(프레임) 진행 루프 (드로우 → EP 수급 → 패시브 → 카드 플레이 → 소진)
-- [ ] 피해 판정 순서 구현 (쉴드 → 장갑 → 함선 내부 랜덤 피탄)
+- [x] 전투 시작 세팅 (`src/systems/combat/CombatState.ts` — 턴 순서 결정)
+- [x] EP(Energy Point) 자원 관리
+- [x] 턴(프레임) 진행 루프 (드로우 → EP 수급 → 패시브 → 카드 플레이 → 소진)
+- [x] 피해 판정 순서 구현 (쉴드 → 장갑 → HP, sensor_jam/armor_break 적용)
 - [ ] 장비 파손 처리 (피탄 시 해당 장비 카드 사용불가)
 - [ ] 게임오버 조건 (브릿지 + 함장실 + 선원실 전멸)
-- [ ] 적 AI — 의도(intent) 패턴 기반 행동
-- [ ] 상태이상 처리 (화상, 과부하, EMP, 수리중)
-- [ ] 단일 전투 씬 완성 (플레이어 vs 적 1체)
+- [x] 적 AI — 의도(intent) 패턴 기반 행동
+- [x] 상태이상 처리 (burn, overload, EMP, repair, ion, scramble, armor_break, sensor_jam)
+- [ ] 단일 전투 씬 완성 (BattleScene UI — 플레이어 vs 적 1체)
 
 ### 전투 UI (ASCII ART 콘솔 스타일)
 
 - [ ] 적 HP / 의도 표시 (ASCII 기반)
-- [ ] 내 HP / 쉴드 / 장갑 / EP / AP 게이지 표시
+- [ ] 내 HP / 쉴드 / 장갑 / EP 게이지 표시
 - [ ] 핸드 카드 표시 (최대 7장) — ASCII 카드 프레임
 - [ ] 드로우 덱/소진 덱 잔여 수 표시
 - [ ] 카드 상세 효과 툴팁
@@ -102,9 +102,9 @@
 
 ### 함선 선택
 
-- [ ] 함선 선택 화면 (3종: 정찰선, 순양함, 전함)
-- [ ] 함선별 스탯/패시브/시작 장비 표시
-- [ ] ASCII ART 함선 외형 표시
+- [x] 함선 선택 화면 (`ShipSelectScene` — 10종 함선 카드형 UI)
+- [x] 함선별 스탯/패시브/시작 장비 표시
+- [x] ASCII ART 함선 외형 표시 (그리드 프리뷰)
 
 ### 상점
 
@@ -126,7 +126,7 @@
 
 ### 데이터 확장
 
-- [ ] 10종 이상 장비 밸런스 조정 및 확정
+- [x] 10종 이상 장비 밸런스 조정 및 확정 (233종 등록 완료)
 - [ ] 구역 1 적 데이터 (일반, 엘리트, 보스) 확정
 - [ ] 구역 1 이벤트 세트 완성
 
