@@ -1,6 +1,6 @@
 # BTL Deck Crawl — 전투 흐름 문서 (battle_info.md)
 
-> **최종 수정일**: 2026-04-15  
+> **최종 수정일**: 2026-04-16  
 > **관련 파일**: `src/data/types.ts`, `src/data/cards.ts`, `src/data/equipment.ts`, `src/data/ships.ts`
 
 ---

@@ -1,6 +1,6 @@
 # BTL Deck Crawl — 데이터베이스 설계 문서 (db_info.md)
 
-> **최종 수정일**: 2026-04-15  
+> **최종 수정일**: 2026-04-16  
 > **관련 파일**: `src/data/` 디렉토리
 
 ---
@@ -479,17 +479,21 @@ src/
 │   ├── BootScene.ts       # 부팅 애니메이션 (터미널 스타일)
 │   ├── ShipSelectScene.ts # 함선 선택 (10종 카드형 UI)
 │   ├── ShipSetupScene.ts  # 장비 배치 (그리드 + 드래그&드롭)
-│   ├── BattleScene.ts     # 전투 (구현 중)
-│   └── RewardScene.ts     # 보상 (구현 중)
+│   ├── StageMapScene.ts   # 스테이지 맵 (구역별 노드 맵 UI)
+│   ├── BattleScene.ts     # 전투 (구현 완료)
+│   ├── RewardScene.ts     # 보상 (구현 완료)
+│   └── ShopScene.ts       # 상점 (장비 구매, 카드 업그레이드, 장비 제거)
 ├── systems/               # 게임 시스템 로직
 │   ├── grid/
 │   │   ├── GridModel.ts   # 그리드 모델 (셀 상태, 배치/제거, 충돌 감지)
 │   │   └── Polyomino.ts   # 폴리오미노 회전/정규화 유틸
 │   ├── deck/
 │   │   └── Deck.ts        # 덱 관리 (Queue/Hand/Exhaust/Exclude)
-│   └── combat/
-│       ├── CardEffectEngine.ts  # 카드 효과 실행 (17종 효과, 상태이상 처리)
-│       └── CombatState.ts      # 전투 상태 머신 (턴 진행, EP, 적 AI)
+│   ├── combat/
+│   │   ├── CardEffectEngine.ts  # 카드 효과 실행 (17종 효과, 상태이상 처리)
+│   │   └── CombatState.ts      # 전투 상태 머신 (턴 진행, EP, 적 AI)
+│   └── stage/
+│       └── StageMapGenerator.ts # 맵 노드 생성 (분기 경로, 노드 타입 배치)
 └── data/
     ├── index.ts           # 데이터 모듈 진입점 (모든 export 집합)
     ├── types.ts           # 전체 타입/인터페이스 정의
@@ -616,7 +620,7 @@ src/
 
 ### Q6. Planning.md와 현재 데이터의 차이
 
-`Planning.md`에서는 "정찰선(Scout), 순양함(Cruiser), 전함(Battleship)" 3종으로 기획되어 있으나, 현재 데이터는 10종의 함선이 구현되어 있다. Planning.md의 함선 정보는 현재 데이터에 맞게 업데이트해야 하는가?
+`Planning.md`는 현재 데이터에 맞게 10종 함선으로 업데이트되었다. 추가적인 변경이 있을 때 해당 문서를 함께 업데이트해야 한다.
 
 ---
 
