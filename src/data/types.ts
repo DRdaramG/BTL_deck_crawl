@@ -285,6 +285,8 @@ export interface EventDefinition {
   id: string;
   name: string;
   description: string;
+  /** 등장 가능한 구역 ID 목록. 생략하면 모든 구역에서 등장 */
+  zoneIds?: number[];
   choices: EventChoice[];
 }
 

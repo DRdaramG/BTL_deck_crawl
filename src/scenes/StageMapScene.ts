@@ -175,6 +175,7 @@ export class StageMapScene extends Phaser.Scene {
           maxHp: this.maxHp,
           scrap: this.scrap,
           dataCore: this.dataCore,
+          zoneId: this.stageMap.zone.id,
           returnData: commonData,
         });
         break;
