@@ -68,6 +68,19 @@ export const ENEMIES: EnemyDefinition[] = [
     isElite: false,
   },
   {
+    id: "pirate_raider",
+    name: "해적 약탈선",
+    zoneIds: [1],
+    hp: 25,
+    intentPatterns: [
+      { type: "attack", value: 7, description: "약탈포 사격" },
+      { type: "debuff", value: 1, description: "스크램블 재밍" },
+      { type: "attack", value: 10, description: "돌격 공격" },
+    ],
+    isBoss: false,
+    isElite: false,
+  },
+  {
     id: "pirate_elite",
     name: "해적 간부선",
     zoneIds: [1],

@@ -18,6 +18,8 @@ interface EventSceneData {
   maxHp?: number;
   scrap?: number;
   dataCore?: number;
+  /** 현재 구역 ID (이벤트 필터링용) */
+  zoneId?: number;
   /** Return data for StageMapScene */
   returnData?: Record<string, unknown>;
 }
@@ -77,11 +79,22 @@ export class EventScene extends Phaser.Scene {
     this.resolvedOutcome = undefined;
     this.effectMessages = [];
 
-    // Pick a random event
-    if (EVENTS.length === 0) {
+    // Pick a random event, filtered by zone if available
+    const zoneId = data.zoneId;
+    let candidates = EVENTS;
+    if (zoneId !== undefined) {
+      // Include events with no zoneIds (global) or matching zoneId
+      candidates = EVENTS.filter(
+        (e) => e.zoneIds == null || e.zoneIds.includes(zoneId),
+      );
+    }
+    if (candidates.length === 0) {
+      candidates = EVENTS; // fallback to all events
+    }
+    if (candidates.length === 0) {
       throw new Error("No events defined in EVENTS array");
     }
-    this.event = EVENTS[Math.floor(Math.random() * EVENTS.length)]!;
+    this.event = candidates[Math.floor(Math.random() * candidates.length)]!;
   }
 
   create(): void {
