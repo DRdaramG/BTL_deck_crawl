@@ -33,6 +33,9 @@ const CARD_UPGRADE_COST = 50;
 /** Equipment removal cost */
 const EQUIPMENT_REMOVE_COST = 40;
 
+/** Price bonus per provided card */
+const CARD_COUNT_PRICE_MULTIPLIER = 5;
+
 /** Card upgrade bonus values by effect type */
 const UPGRADE_BONUS: Record<string, number> = {
   damage: 3,
@@ -94,6 +97,9 @@ export class ShopScene extends Phaser.Scene {
   /** Upgraded card IDs this visit (prevent double-upgrade) */
   private upgradedCardIds: Set<string> = new Set();
 
+  /** Cumulative card upgrade bonuses (cardId → applied bonus map) */
+  private cardUpgrades: Map<string, Record<string, number>> = new Map();
+
   /** Removed equipment IDs this visit */
   private removedEquipmentIds: Set<string> = new Set();
 
@@ -120,6 +126,7 @@ export class ShopScene extends Phaser.Scene {
     this.mode = "main";
     this.selectedIndex = -1;
     this.upgradedCardIds = new Set();
+    this.cardUpgrades = new Map();
     this.removedEquipmentIds = new Set();
     this.message = "";
 
@@ -430,10 +437,11 @@ export class ShopScene extends Phaser.Scene {
     // Deduct scrap
     this.scrap -= price;
 
-    // Add equipment to placed equipment (position 0,0 — will need to be placed via ShipSetupScene)
+    // Add equipment to inventory. Position (-1,-1) indicates the equipment
+    // needs to be placed on the grid via ShipSetupScene (수리 기지 or 장비 배치 화면).
     this.placedEquipment.push({
       equipmentId: equip.id,
-      position: { row: 0, col: 0 },
+      position: { row: -1, col: -1 },
       rotation: 0,
     });
 
@@ -526,19 +534,26 @@ export class ShopScene extends Phaser.Scene {
     this.scrap -= CARD_UPGRADE_COST;
     this.upgradedCardIds.add(cardId);
 
-    // Apply upgrade to the card definition (runtime modification)
+    // Apply upgrade to the card definition.
+    // We deep-copy the effects array so the original data is not mutated
+    // if this card is shared by multiple equipment pieces.
     const card = CARDS[cardId];
     if (card) {
+      // Clone effects to avoid mutating the original definition for other contexts
+      card.effects = card.effects.map((e) => ({ ...e }));
+      const bonuses: Record<string, number> = {};
       for (const effect of card.effects) {
         const bonusVal = UPGRADE_BONUS[effect.type];
         if (bonusVal && effect.value !== undefined) {
           effect.value += bonusVal;
+          bonuses[effect.type] = bonusVal;
         }
       }
       // Mark as upgraded in name
       if (!card.name.endsWith("+")) {
         card.name += "+";
       }
+      this.cardUpgrades.set(cardId, bonuses);
     }
 
     this.message = `${card?.name ?? cardId} 업그레이드 완료! (${CARD_UPGRADE_COST} 스크랩 사용)`;
@@ -677,7 +692,7 @@ export class ShopScene extends Phaser.Scene {
     // Base price from grade + slight random variation
     const base = GRADE_PRICE[equip.grade] ?? 50;
     // Add variation based on number of cards provided
-    const cardBonus = equip.providedCards.reduce((sum, pc) => sum + pc.count * 5, 0);
+    const cardBonus = equip.providedCards.reduce((sum, pc) => sum + pc.count * CARD_COUNT_PRICE_MULTIPLIER, 0);
     return base + cardBonus;
   }
 
@@ -697,9 +712,9 @@ export class ShopScene extends Phaser.Scene {
         const card = CARDS[pc.cardId];
         if (!card) continue;
 
-        // Only show cards that have upgradeable effects and haven't been upgraded this visit
+        // Show cards that have upgradeable effects or have already been upgraded this visit (for display)
         const bonus = this.getUpgradeBonus(card);
-        if (bonus || this.upgradedCardIds.has(card.id)) {
+        if (bonus !== null || this.upgradedCardIds.has(card.id)) {
           entries.push({ card, equipId: placed.equipmentId });
         }
       }
