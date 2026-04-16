@@ -455,7 +455,7 @@ export const EVENTS: EventDefinition[] = [
         outcomes: [
           {
             probability: 0.5,
-            description: "기습 성공! 에픽 장비 노획!",
+            description: "기습 성공! 희귀 장비 노획!",
             effects: [
               { type: "gain_equipment", targetId: "random_rare" },
               { type: "gain_currency", currencyType: "scrap", value: 30 },
