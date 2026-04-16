@@ -1,6 +1,5 @@
 import * as Phaser from "phaser";
-import { ENEMIES } from "../data";
-import type { PlacedEquipment, NodeType } from "../data";
+import type { PlacedEquipment } from "../data";
 import {
   generateStageMap,
   getSelectableNodeIds,
@@ -168,66 +167,34 @@ export class StageMapScene extends Phaser.Scene {
         });
         break;
       }
-      case "event":
-      case "repair":
-        // These scenes are not yet implemented (M2 future tasks).
-        // For now, show a placeholder and return to map.
-        this.showPlaceholder(node.type);
+      case "event": {
+        this.scene.start("EventScene", {
+          shipId: this.shipId,
+          placedEquipment: this.placedEquipment,
+          currentHp: this.currentHp,
+          maxHp: this.maxHp,
+          scrap: this.scrap,
+          dataCore: this.dataCore,
+          returnData: commonData,
+        });
         break;
+      }
+      case "repair": {
+        this.scene.start("RepairScene", {
+          shipId: this.shipId,
+          placedEquipment: this.placedEquipment,
+          currentHp: this.currentHp,
+          maxHp: this.maxHp,
+          scrap: this.scrap,
+          dataCore: this.dataCore,
+          returnData: commonData,
+        });
+        break;
+      }
     }
   }
 
-  /**
-   * Placeholder for unimplemented node types.
-   * Shows a brief message and returns to the map.
-   */
-  private showPlaceholder(type: NodeType): void {
-    this.clearUI();
-    const sceneW = this.scale.width;
-    const sceneH = this.scale.height;
 
-    const label = nodeTypeLabel(type);
-    const icon = nodeTypeIcon(type);
-
-    addScanlines(this);
-    addVignette(this);
-
-    this.addText(sceneW / 2, sceneH / 2 - 60, `${icon} ${label} ${icon}`, {
-      ...TITLE_STYLE,
-      fontSize: "28px",
-    }).setOrigin(0.5);
-
-    let description: string;
-    switch (type) {
-      case "event":
-        description = "이벤트 기능은 아직 구현 중입니다.\n선택지 기반 랜덤 이벤트가 추가될 예정입니다.";
-        break;
-      case "repair":
-        description = "수리 기지 기능은 아직 구현 중입니다.\nHP를 회복하고 장비를 재배치할 수 있게 될 예정입니다.";
-        break;
-      default:
-        description = "이 기능은 아직 구현 중입니다.";
-    }
-
-    this.addText(sceneW / 2, sceneH / 2, description, {
-      ...BODY_STYLE,
-      fontSize: "14px",
-      color: Color.DIM,
-      align: "center",
-    }).setOrigin(0.5);
-
-    const btn = this.addText(sceneW / 2, sceneH / 2 + 80, "[ CONTINUE ]", {
-      ...BUTTON_STYLE,
-      fontSize: "18px",
-      padding: { x: 20, y: 8 },
-    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-
-    btn.on("pointerdown", () => {
-      // Re-enter map
-      this.selectableNodeIds = getSelectableNodeIds(this.stageMap, this.visitedNodeIds);
-      this.renderUI();
-    });
-  }
 
   // ─── Render Helpers ───────────────────────────────────────
 
